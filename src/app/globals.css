@@ -21,7 +21,7 @@ body {
   min-height: 100%;
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(192, 132, 87, 0.18), transparent 32rem),
+    radial-gradient(circle at top left, rgba(181, 164, 140, 0.18), transparent 32rem),
     linear-gradient(180deg, #fffdfc 0%, #f6f1eb 44%, #eadccd 100%);
   color: #2b1810;
 }
@@ -32,7 +32,7 @@ input {
 }
 
 ::selection {
-  background: #c08457;
+  background: #b5a48c;
   color: #fffdfc;
 }
 
