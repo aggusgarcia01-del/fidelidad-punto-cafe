@@ -43,15 +43,19 @@ export function CustomerDashboard() {
       const response = await fetch("/api/profile", {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       });
-      const json = (await response.json()) as Profile | { error: string };
+      
+      const json = await response.json().catch(() => null) as Profile | { error: string } | null;
 
-      if (!response.ok || "error" in json) {
-        setError("No pudimos cargar tu tarjeta.");
-        setLoading(false);
+      if (!response.ok || !json || "error" in json) {
+        setError(json && "error" in json ? json.error : "No pudimos cargar tu tarjeta.");
         return;
       }
 
       setProfile(json);
+    } catch (caught) {
+      setError(
+        caught instanceof Error ? caught.message : "Error al conectar con el servidor."
+      );
     } finally {
       setLoading(false);
       setRefreshing(false);

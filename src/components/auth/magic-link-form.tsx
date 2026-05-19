@@ -29,19 +29,27 @@ export function MagicLinkForm() {
     setLoading(true);
     resetFeedback();
 
-    const response = await fetch("/api/auth/dni-login", {
-      method: "POST",
-      body: JSON.stringify({ dni }),
-    });
-    const json = (await response.json()) as { error?: string };
+    try {
+      const response = await fetch("/api/auth/dni-login", {
+        method: "POST",
+        body: JSON.stringify({ dni }),
+      });
+      
+      const json = await response.json().catch(() => null) as { error?: string } | null;
 
-    if (!response.ok) {
-      setError(json.error ?? "No pudimos entrar con ese DNI.");
+      if (!response.ok || !json) {
+        setError(json?.error ?? "No pudimos entrar con ese DNI.");
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch (caught) {
+      setError(
+        caught instanceof Error ? caught.message : "Error al intentar iniciar sesión.",
+      );
+    } finally {
       setLoading(false);
-      return;
     }
-
-    window.location.href = "/dashboard";
   };
 
   const sendMagicLink = async (event: FormEvent<HTMLFormElement>) => {
