@@ -7,7 +7,7 @@ const config: Config = {
       colors: {
         cream: "#F6F1EB",
         espresso: "#2B1810",
-        caramel: "#C08457",
+        caramel: "#b5a48c",
         oat: "#E8D9C9",
         porcelain: "#FFFDFC",
       },
@@ -16,7 +16,7 @@ const config: Config = {
         lift: "0 16px 36px rgba(43, 24, 16, 0.14)",
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["var(--font-outfit)", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
     },
   },

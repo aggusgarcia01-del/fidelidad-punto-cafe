@@ -31,17 +31,19 @@ export async function getOrCreateProfile(token: string) {
     String(authUser.user_metadata.dni ?? "")
       .replace(/\D/g, "")
       .trim() || null;
+  const birthDate = String(authUser.user_metadata.birth_date ?? "").trim() || null;
 
   // Fetch existing user to preserve database-only values like DNI
   const { data: existingUser } = await supabaseAdmin
     .from("users")
-    .select("id, full_name, dni, phone, email, created_at")
+    .select("id, full_name, dni, phone, email, birth_date, created_at")
     .eq("email", email)
     .maybeSingle();
 
   const finalDni = existingUser?.dni || dni;
   const finalPhone = existingUser?.phone || phone;
   const finalFullName = existingUser?.full_name || fullName;
+  const finalBirthDate = existingUser?.birth_date || birthDate;
 
   const { data: user, error: userError } = await supabaseAdmin
     .from("users")
@@ -51,10 +53,11 @@ export async function getOrCreateProfile(token: string) {
         full_name: finalFullName,
         dni: finalDni,
         phone: finalPhone,
+        birth_date: finalBirthDate,
       },
       { onConflict: "email" },
     )
-    .select("id, full_name, dni, phone, email, created_at")
+    .select("id, full_name, dni, phone, email, birth_date, created_at")
     .single();
 
   if (userError || !user) {
@@ -89,7 +92,7 @@ export async function getProfileByUserId(userId: string) {
 
   const { data: user, error: userError } = await supabaseAdmin
     .from("users")
-    .select("id, full_name, dni, phone, email, created_at")
+    .select("id, full_name, dni, phone, email, birth_date, created_at")
     .eq("id", userId)
     .single();
 

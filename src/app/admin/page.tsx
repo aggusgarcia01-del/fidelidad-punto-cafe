@@ -28,6 +28,21 @@ function getCard(customer: LoyaltyCustomer): Card | null {
   return customer.loyalty_cards;
 }
 
+function isBirthdayToday(birthDateStr: string | null | undefined): boolean {
+  if (!birthDateStr) return false;
+  try {
+    const today = new Date();
+    // Parse specifying midday to prevent timezone shifts (e.g. 1990-05-19T12:00:00)
+    const birthDate = new Date(birthDateStr + "T12:00:00");
+    return (
+      today.getDate() === birthDate.getDate() &&
+      today.getMonth() === birthDate.getMonth()
+    );
+  } catch {
+    return false;
+  }
+}
+
 export default function AdminPage() {
   const [isLogged, setIsLogged] = useState(false);
   const [pin, setPin] = useState("");
@@ -43,6 +58,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<SuccessData | null>(null);
+
+  const birthdayToday = selectedCustomer ? isBirthdayToday(selectedCustomer.birth_date) : false;
 
   // Check initial session
   useEffect(() => {
@@ -364,6 +381,15 @@ export default function AdminPage() {
                     <p>DNI: <span className="text-espresso font-bold">{selectedCustomer.dni || "—"}</span></p>
                     <p>Tel: <span className="text-espresso font-bold">{selectedCustomer.phone || "—"}</span></p>
                     <p>Email: <span className="text-espresso font-bold">{selectedCustomer.email || "—"}</span></p>
+                    <p>Cumpleaños: <span className="text-espresso font-bold">
+                      {selectedCustomer.birth_date
+                        ? new Date(selectedCustomer.birth_date + "T12:00:00").toLocaleDateString("es-AR", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })
+                        : "No registrado"}
+                    </span></p>
                   </div>
                 </div>
                 <button
@@ -379,6 +405,17 @@ export default function AdminPage() {
                   <X className="h-5 w-5" />
                 </button>
               </div>
+
+              {/* Birthday Banner */}
+              {birthdayToday && (
+                <div className="bg-[#b5a48c]/15 border-2 border-dashed border-[#b5a48c] rounded-xl p-5 text-center text-espresso animate-in fade-in duration-300">
+                  <span className="text-3xl">🎉</span>
+                  <h3 className="font-extrabold text-lg mt-1 text-espresso">¡Hoy es su cumpleaños!</h3>
+                  <p className="text-xs text-espresso/80 mt-1 max-w-md mx-auto">
+                    ¡Hazle un regalo especial de parte de PuntoCafé! (Ej. un café gratis de cortesía o suma un sello de regalo).
+                  </p>
+                </div>
+              )}
 
               {/* Stamps Progress Bar */}
               <div className="space-y-4">

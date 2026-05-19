@@ -16,6 +16,7 @@ export type Database = {
           dni: string | null;
           phone: string | null;
           email: string | null;
+          birth_date: string | null;
           created_at: string;
         };
         Insert: {
@@ -24,6 +25,7 @@ export type Database = {
           dni?: string | null;
           phone?: string | null;
           email?: string | null;
+          birth_date?: string | null;
           created_at?: string;
         };
         Update: {
@@ -32,6 +34,7 @@ export type Database = {
           dni?: string | null;
           phone?: string | null;
           email?: string | null;
+          birth_date?: string | null;
           created_at?: string;
         };
         Relationships: [];

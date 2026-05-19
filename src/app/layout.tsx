@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import { Outfit } from "next/font/google";
 import { PwaRegister } from "@/components/pwa-register";
 import "./globals.css";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "PuntoCafe Rewards",
@@ -27,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className="font-sans antialiased">
+      <body className={`${outfit.variable} font-sans antialiased`}>
         {children}
         <PwaRegister />
       </body>

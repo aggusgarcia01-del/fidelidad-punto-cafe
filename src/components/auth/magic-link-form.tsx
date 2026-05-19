@@ -14,6 +14,7 @@ export function MagicLinkForm() {
   const [dni, setDni] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -59,6 +60,7 @@ export function MagicLinkForm() {
             full_name: fullName,
             dni,
             phone,
+            birth_date: birthDate,
           },
         },
       });
@@ -172,6 +174,13 @@ export function MagicLinkForm() {
               onChange={(event) => setPhone(event.target.value)}
               placeholder="+54 9 11 ..."
               inputMode="tel"
+              required
+            />
+            <Input
+              label="Fecha de nacimiento"
+              value={birthDate}
+              onChange={(event) => setBirthDate(event.target.value)}
+              type="date"
               required
             />
             <Input

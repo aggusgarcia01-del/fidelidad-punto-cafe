@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabaseAdmin
     .from("users")
-    .select("id, full_name, dni, phone, email, created_at, loyalty_cards(id, stamps, total_rewards, updated_at)")
+    .select("id, full_name, dni, phone, email, birth_date, created_at, loyalty_cards(id, stamps, total_rewards, updated_at)")
     .order("created_at", { ascending: false })
     .limit(30);
 
