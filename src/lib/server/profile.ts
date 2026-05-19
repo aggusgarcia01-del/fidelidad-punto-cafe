@@ -32,14 +32,25 @@ export async function getOrCreateProfile(token: string) {
       .replace(/\D/g, "")
       .trim() || null;
 
+  // Fetch existing user to preserve database-only values like DNI
+  const { data: existingUser } = await supabaseAdmin
+    .from("users")
+    .select("id, full_name, dni, phone, email, created_at")
+    .eq("email", email)
+    .maybeSingle();
+
+  const finalDni = existingUser?.dni || dni;
+  const finalPhone = existingUser?.phone || phone;
+  const finalFullName = existingUser?.full_name || fullName;
+
   const { data: user, error: userError } = await supabaseAdmin
     .from("users")
     .upsert(
       {
         email,
-        full_name: fullName,
-        dni,
-        phone,
+        full_name: finalFullName,
+        dni: finalDni,
+        phone: finalPhone,
       },
       { onConflict: "email" },
     )

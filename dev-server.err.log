@@ -1,2 +1,601 @@
  ⚠ Cross origin request detected from 192.168.0.109 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ ⨯ ./src/components/dashboard/customer-dashboard.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m    ^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+  [31mx[0m Unterminated regexp literal
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m     ^^^^^^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/dashboard/customer-dashboard.tsx
+./src/app/dashboard/page.tsx
+ ⨯ ./src/components/dashboard/customer-dashboard.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m    ^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+  [31mx[0m Unterminated regexp literal
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m     ^^^^^^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/dashboard/customer-dashboard.tsx
+./src/app/dashboard/page.tsx
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ ./src/components/dashboard/customer-dashboard.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m    ^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+  [31mx[0m Unterminated regexp literal
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m     ^^^^^^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/dashboard/customer-dashboard.tsx
+./src/app/dashboard/page.tsx
+ ⨯ ./src/components/dashboard/customer-dashboard.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m    ^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+  [31mx[0m Unterminated regexp literal
+     ,-[[36;1;4mC:\Users\Usuario\Documents\Fidelidad punto cafe\src\components\dashboard\customer-dashboard.tsx[0m:195:1]
+ [2m192[0m |       </div>
+ [2m193[0m | 
+ [2m194[0m |       </div>
+ [2m195[0m |     </main>
+     : [35;1m     ^^^^^^[0m
+ [2m196[0m |   );
+ [2m197[0m | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/dashboard/customer-dashboard.tsx
+./src/app/dashboard/page.tsx
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json',
+  page: '/admin'
+}
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json',
+  page: '/admin'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json',
+  page: '/admin'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json',
+  page: '/admin'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json',
+  page: '/admin'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json',
+  page: '/admin'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\routes-manifest.json'
+}
+ ⨯ Error: Could not find the module "C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1846866709'
+}
+ ⨯ Error: Could not find the module "C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '782094417'
+}
+ ⨯ Error: Could not find the module "C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '782094417'
+}
+ ⨯ Error: Could not find the module "C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '782094417'
+}
+ ⨯ Error: Could not find the module "C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1846866709'
+}
+ ⨯ Error: Could not find the module "C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1846866709'
+}
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  digest: '1129210162'
+}
+ ⨯ Error: Could not find the module "C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1846866709'
+}
+[TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/dashboard'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/dashboard'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ Error: Cannot find module './543.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7465)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7514) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+Error: Cannot find module './543.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7465)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7514) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ Error: Cannot find module './543.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7465)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7514) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+Error: Cannot find module './543.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7465)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7514) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ Error: Cannot find module './543.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7465)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7514) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+Error: Cannot find module './543.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7465)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js:2:7514) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/admin'
+}
+ ⨯ Error: Cannot find module './611.js'
+Require stack:
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\webpack-runtime.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\require.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\load-components.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\utils.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\options.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\swc\index.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\config.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\next.js
+- C:\Users\Usuario\Documents\Fidelidad punto cafe\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:321)
+    at Object.<anonymous> (C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js:1:366) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\server\\app\\admin\\page.js',
+  page: '/admin'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\server\\pages\\_document.js'
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\app\admin\page.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\server\\app\\admin\\page.js',
+  page: '/admin'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Usuario\Documents\Fidelidad punto cafe\.next\server\pages\_document.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Usuario\\Documents\\Fidelidad punto cafe\\.next\\server\\pages\\_document.js'
+}
+[TypeError: Cannot read properties of undefined (reading '/_app')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading '/_app')]
+[TypeError: Cannot read properties of undefined (reading '/_app')]

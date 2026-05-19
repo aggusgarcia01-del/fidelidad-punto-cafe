@@ -1,10 +1,9 @@
 import "server-only";
-import { cookies } from "next/headers";
+import { isAdminAuthenticated, adminCookieName } from "./admin-session";
 
-export const adminCookieName = "puntocafe_admin";
+export { adminCookieName };
 
 export async function requireAdmin() {
-  const cookieStore = await cookies();
-  const isAdmin = cookieStore.get(adminCookieName)?.value === "1";
+  const isAdmin = await isAdminAuthenticated();
   return { ok: isAdmin };
 }

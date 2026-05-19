@@ -65,7 +65,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       loyalty_events: {
@@ -113,7 +113,36 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
+        ];
+      };
+      stamps: {
+        Row: {
+          id: string;
+          user_id: string;
+          stamped_at: string;
+          note: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          stamped_at?: string;
+          note?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          stamped_at?: string;
+          note?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stamps_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
         ];
       };
     };

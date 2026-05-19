@@ -94,3 +94,129 @@
  POST /api/auth/dni-login 404 in 120ms
  GET / 200 in 178ms
  POST /api/auth/dni-login 404 in 83ms
+ GET /dashboard 200 in 667ms
+ GET /api/profile 200 in 335ms
+ GET /api/profile 200 in 217ms
+ ✓ Compiled in 431ms (367 modules)
+ GET /dashboard 200 in 30ms
+ GET /admin 200 in 43ms
+ ✓ Compiled in 172ms (367 modules)
+ GET /dashboard 200 in 53ms
+ GET /admin 200 in 54ms
+ ✓ Compiled in 305ms (936 modules)
+ GET /dashboard 200 in 181ms
+ GET /admin 200 in 182ms
+ ✓ Compiled in 97ms (367 modules)
+ GET /dashboard 200 in 43ms
+ GET /admin 200 in 43ms
+ GET /api/profile 200 in 585ms
+ GET /api/profile 200 in 202ms
+ GET /dashboard 200 in 141ms
+ GET /api/profile 200 in 191ms
+ ✓ Compiled in 163ms (367 modules)
+ GET /dashboard 200 in 61ms
+ GET /admin 200 in 62ms
+ GET /api/profile 200 in 274ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 804ms (941 modules)
+ GET /admin+ 404 in 956ms
+ GET /admin 200 in 187ms
+ GET /admin 200 in 45ms
+ ✓ Compiled in 113ms (371 modules)
+ GET /admin 200 in 77ms
+ GET /admin 200 in 89ms
+ GET /admin 200 in 78ms
+ ✓ Compiled in 311ms (941 modules)
+ GET /admin 200 in 285ms
+ GET /admin 200 in 77ms
+ GET /admin 200 in 26ms
+ ✓ Compiled /api/admin/login in 161ms (573 modules)
+ POST /api/admin/login 200 in 201ms
+ GET /admin 200 in 79ms
+ GET /admin 200 in 80ms
+ ✓ Compiled /api/admin/customers in 173ms (576 modules)
+ GET /admin 200 in 101ms
+ GET /admin 200 in 101ms
+ GET /api/admin/customers?q= 200 in 378ms
+ ✓ Compiled /api/admin/history in 179ms (578 modules)
+ GET /admin 200 in 73ms
+ GET /admin 200 in 74ms
+ GET /api/admin/history?userId=c7f465ea-d041-44e2-a90d-8df642753111 200 in 286ms
+ GET /api/admin/customers?q=c7f465ea-d041-44e2-a90d-8df642753111 200 in 108ms
+ GET /api/admin/history?userId=c7f465ea-d041-44e2-a90d-8df642753111 200 in 79ms
+ GET /api/admin/history?userId=c7f465ea-d041-44e2-a90d-8df642753111 200 in 75ms
+ GET /api/admin/customers?q=c7f465ea-d041-44e2-a90d-8df642753111 200 in 74ms
+ GET /api/admin/history?userId=c7f465ea-d041-44e2-a90d-8df642753111 200 in 74ms
+ GET /api/admin/history?userId=c7f465ea-d041-44e2-a90d-8df642753111 200 in 72ms
+ ✓ Compiled in 107ms (371 modules)
+ GET /admin 200 in 45ms
+ GET /admin 200 in 45ms
+ GET /admin 200 in 110ms
+ GET /admin 200 in 112ms
+ ✓ Compiled in 283ms (949 modules)
+ GET /admin 200 in 106ms
+ GET /admin 200 in 109ms
+ ✓ Compiled in 119ms (371 modules)
+ GET /admin 200 in 47ms
+ GET /admin 200 in 48ms
+ GET /admin+ 404 in 78ms
+ GET /dashboard 200 in 88ms
+ GET /api/profile 200 in 285ms
+ ○ Compiling /_error ...
+ GET /admin 500 in 1630ms
+ GET /dashboard 500 in 1628ms
+ GET /admin 500 in 20ms
+ GET /dashboard 500 in 26ms
+ GET /admin 500 in 21ms
+ GET /dashboard 500 in 22ms
+ GET /dashboard 500 in 19ms
+ GET /admin 500 in 24ms
+ GET /dashboard 500 in 222ms
+ GET /admin 500 in 231ms
+ GET /dashboard 200 in 251ms
+ GET /admin 200 in 256ms
+ GET /admin 500 in 115ms
+ GET /dashboard 500 in 111ms
+ GET /admin 500 in 121ms
+ ✓ Compiled /_error in 881ms (1068 modules)
+ GET /admin 500 in 1119ms
+ ✓ Compiled (1054 modules)
+ GET /admin 500 in 246ms
+ GET /admin 500 in 1348ms
+ GET /admin 500 in 446ms
+ ✓ Compiled in 333ms (1068 modules)
+ ✓ Compiled in 223ms (1068 modules)
+ ✓ Compiled in 94ms (464 modules)
+ ✓ Compiled in 102ms (464 modules)
+ ✓ Compiled in 90ms (464 modules)
+ ✓ Compiled in 115ms (464 modules)
+ ✓ Compiled in 110ms (464 modules)
+ ✓ Compiled in 76ms (464 modules)
+ ✓ Compiled in 91ms (464 modules)
+ GET / 200 in 139ms
+ GET / 200 in 52ms
+ GET /dashboard 200 in 51ms
+ GET /admin 200 in 51ms
+ ✓ Compiled /api/auth/dni-login in 502ms (576 modules)
+ POST /api/auth/dni-login 200 in 1042ms
+ ✓ Compiled /_error in 266ms (1122 modules)
+ GET /dashboard 500 in 2203ms
+ GET /dashboard 500 in 33ms
+ GET / 200 in 249ms
+ GET /dashboard 200 in 43ms
+ GET / 200 in 52ms
+ GET / 200 in 50ms
+ GET /admin 500 in 125ms
+ GET /admin 500 in 37ms
+ GET /admin 500 in 111ms
+ GET /admin 500 in 36ms
+ GET /admin 500 in 96ms
+ GET /admin 500 in 32ms
+ GET / 200 in 45ms
+ ✓ Compiled /_not-found in 360ms (963 modules)
+ GET / 404 in 555ms
+ ✓ Compiled /_error in 181ms (1059 modules)
+ GET /admin 500 in 285ms
+ GET /admin 500 in 27ms
+ GET / 200 in 278ms
+ GET /? 200 in 43ms

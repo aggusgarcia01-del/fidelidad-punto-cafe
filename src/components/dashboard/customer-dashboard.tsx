@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import QRCode from "qrcode";
 import {
   Apple,
   Coffee,
@@ -9,11 +8,11 @@ import {
   QrCode,
   RefreshCw,
   Wallet,
-  X,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import { StampCard } from "@/components/loyalty/stamp-card";
+import { StampCode } from "@/components/StampCode";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Database } from "@/types/database";
 
@@ -24,10 +23,8 @@ type Profile = {
 
 export function CustomerDashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [qr, setQr] = useState("");
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [qrOpen, setQrOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
@@ -55,12 +52,6 @@ export function CustomerDashboard() {
       }
 
       setProfile(json);
-      const qrPayload = JSON.stringify({
-        type: "puntocafe_loyalty",
-        userId: json.user.id,
-        email: json.user.email,
-      });
-      setQr(await QRCode.toDataURL(qrPayload, { margin: 1, width: 320 }));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -164,35 +155,17 @@ export function CustomerDashboard() {
               {rewardReady ? "Recompensa lista" : "Para sumar sellos"}
             </p>
             <h1 className="mt-2 text-3xl font-semibold leading-tight text-espresso sm:text-4xl">
-              {rewardReady ? "Tenes cafe gratis" : "Mostra este QR en caja"}
+              {rewardReady ? "Tenes cafe gratis" : "Dicta tu DNI y código"}
             </h1>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-espresso/58">
+            <p className="mx-auto mt-3 mb-6 max-w-md text-sm leading-6 text-espresso/58">
               {rewardReady
-                ? "Mostra este QR para canjear tu recompensa en el mostrador."
-                : "El barista lo escanea y suma tu sello en segundos."}
+                ? "Mostra esta pantalla para canjear tu recompensa en el mostrador."
+                : "El barista te pedirá el DNI y este código para sumar tu sello."}
             </p>
 
-            <button
-              className="mx-auto mt-6 grid w-full max-w-xs place-items-center rounded-lg bg-porcelain p-4 shadow-lift transition hover:scale-[1.01]"
-              onClick={() => setQrOpen(true)}
-              type="button"
-            >
-              {qr ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={qr}
-                  alt="QR de fidelizacion PuntoCafe"
-                  className="h-64 w-64 rounded-lg"
-                />
-              ) : null}
-            </button>
+            {!rewardReady && <StampCode dni={profile.user.dni} />}
 
-            <Button className="mt-5 w-full sm:w-auto" onClick={() => setQrOpen(true)}>
-              <QrCode className="h-4 w-4" />
-              Mostrar QR grande
-            </Button>
-
-            <div className="mt-5 flex items-center justify-center gap-2 text-sm font-medium text-espresso/58">
+            <div className="mt-8 flex items-center justify-center gap-2 text-sm font-medium text-espresso/58">
               <Coffee className="h-4 w-4 text-caramel" />
               {profile.card.stamps}/5 sellos acumulados
             </div>
@@ -216,39 +189,6 @@ export function CustomerDashboard() {
           </div>
         </section>
       </div>
-
-      {qrOpen ? (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-espresso/92 px-4 py-6">
-          <div className="w-full max-w-sm rounded-lg bg-cream p-5 text-center shadow-soft">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <p className="text-left text-sm font-semibold uppercase tracking-[0.18em] text-caramel">
-                PuntoCafe QR
-              </p>
-              <button
-                aria-label="Cerrar QR"
-                className="grid h-10 w-10 place-items-center rounded-lg bg-espresso/8 text-espresso"
-                onClick={() => setQrOpen(false)}
-                type="button"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="grid place-items-center rounded-lg bg-porcelain p-4">
-              {qr ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={qr}
-                  alt="QR de fidelizacion PuntoCafe"
-                  className="h-72 w-72 rounded-lg"
-                />
-              ) : null}
-            </div>
-            <p className="mt-4 text-sm font-medium text-espresso/62">
-              {profile.user.full_name}
-            </p>
-          </div>
-        </div>
-      ) : null}
     </main>
   );
 }
