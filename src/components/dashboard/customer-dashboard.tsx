@@ -148,20 +148,20 @@ export function CustomerDashboard() {
 
         <section className="grid gap-5">
           <div
-            className={`glass-panel rounded-lg p-5 text-center shadow-soft sm:p-6 ${
-              rewardReady ? "ring-2 ring-caramel" : ""
+            className={`relative group perspective-1000 bg-tertiary-container/40 backdrop-blur-xl border border-surface-variant/10 rounded-xl p-8 md:p-10 text-center shadow-[0_8px_32px_rgba(0,0,0,0.5)] ${
+              rewardReady ? "ring-1 ring-secondary-fixed-dim" : ""
             }`}
           >
-            <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-lg bg-caramel/16 text-caramel">
+            <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-lg bg-secondary-fixed-dim/20 text-secondary-fixed-dim">
               <QrCode className="h-6 w-6" />
             </div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-caramel">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-secondary-fixed-dim">
               {rewardReady ? "Recompensa lista" : "Para sumar sellos"}
             </p>
-            <h1 className="mt-2 text-3xl font-semibold leading-tight text-espresso sm:text-4xl">
+            <h1 className="mt-2 text-3xl font-semibold leading-tight text-inverse-on-surface sm:text-4xl">
               {rewardReady ? "Tenes cafe gratis" : "Dicta tu DNI y código"}
             </h1>
-            <p className="mx-auto mt-3 mb-6 max-w-md text-sm leading-6 text-espresso/58">
+            <p className="mx-auto mt-3 mb-6 max-w-md text-sm leading-6 text-surface-variant/80">
               {rewardReady
                 ? "Mostra esta pantalla para canjear tu recompensa en el mostrador."
                 : "El barista te pedirá el DNI y este código para sumar tu sello."}
@@ -169,8 +169,8 @@ export function CustomerDashboard() {
 
             {!rewardReady && <StampCode dni={profile.user.dni} />}
 
-            <div className="mt-8 flex items-center justify-center gap-2 text-sm font-medium text-espresso/58">
-              <Coffee className="h-4 w-4 text-caramel" />
+            <div className="mt-8 flex items-center justify-center gap-2 text-sm font-medium text-surface-variant/80">
+              <Coffee className="h-4 w-4 text-secondary-fixed-dim" />
               {profile.card.stamps}/5 sellos acumulados
             </div>
           </div>

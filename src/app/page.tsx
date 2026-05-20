@@ -1,76 +1,50 @@
-import { Coffee, QrCode, ShieldCheck, Sparkles } from "lucide-react";
 import { MagicLinkForm } from "@/components/auth/magic-link-form";
-import { BrandLogo, BrandPattern } from "@/components/brand-identity";
-
-const highlights = [
-  { icon: Coffee, label: "5 sellos = café de regalo" },
-  { icon: QrCode, label: "Acceso simple con tu DNI" },
-  { icon: ShieldCheck, label: "Sin plásticos ni papel" },
-];
 
 export default function HomePage() {
   return (
-    <main className="min-h-dvh px-4 py-8 sm:px-6 lg:px-8 relative overflow-hidden flex items-center justify-center">
-      {/* Decorative watermark patterns in the background */}
-      <div className="absolute top-[-50px] right-[-100px] text-caramel/5 pointer-events-none transform rotate-12 scale-150 hidden lg:block">
-        <BrandPattern count={3} />
-      </div>
-      <div className="absolute bottom-[-50px] left-[-100px] text-caramel/5 pointer-events-none transform -rotate-12 scale-150 hidden lg:block">
-        <BrandPattern count={3} />
+    <>
+      {/* Premium Gradient Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[#131110]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(181,164,140,0.15),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(60,45,35,0.3),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#131110_80%)]"></div>
       </div>
 
-      <section className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] relative z-10 py-4">
+      {/* Main Content Canvas */}
+      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-container-padding-mobile md:px-container-padding-desktop py-12">
         
-        {/* Left Side: Brand presentation */}
-        <div className="space-y-10 flex flex-col justify-center">
-          <div className="space-y-6">
-            <BrandLogo layout="horizontal" size="lg" />
-            
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#b5a48c]/20 bg-[#b5a48c]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-espresso">
-              <Sparkles className="h-3.5 w-3.5 text-caramel animate-pulse" />
-              Specialty Coffee Loyalty Card
-            </div>
-            
-            <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-espresso sm:text-5xl lg:text-6xl max-w-xl">
-              Tus cafés de siempre, ahora con recompensa.
-            </h1>
-            
-            <p className="max-w-xl text-base leading-relaxed text-espresso/70">
-              Juntá sellos digitales en cada visita. Al llegar a 5 consumos,
-              te regalamos el próximo café. Así de simple, rápido y 100% digital.
-            </p>
+        {/* Header Section */}
+        <header className="flex flex-col items-center text-center max-w-2xl mx-auto w-full mb-10">
+          {/* Brand Logo: Restored Isologo from SCREEN_5 */}
+          <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border border-surface-variant/10 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+            <img 
+              alt="Punto Café Logo" 
+              className="w-full h-full object-cover" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9Oc41mV9ZvO4QpzGUUodEFizePE5Wov7XX0StaZsETKx8cF2C7_blz4lZljL3V7bFGihWnVwzVTWnBifHW97NYTp8Lq4AXnd3UX2Zbr9M_ri_qAif6tkVji0MRhePUdXeUfU1Tfc44yGBOlo4IZyth15WgONOk3-NCu72ToY4c4v66aVDqoIUK_Bl4sf1NEmXdTp8ldQ1R10XwHguz1w39XtdqC0OoVxJKpoWiBtZNTk9yQRlO0C5wY9jMfFH-C-L79TcW0madeg" 
+            />
           </div>
+          
+          <img 
+            src="/punto-cafe-text.png" 
+            alt="Punto Café" 
+            className="h-12 object-contain mb-8 opacity-90"
+          />
 
-          {/* Highlights grid */}
-          <div className="grid max-w-2xl gap-4 sm:grid-cols-3">
-            {highlights.map(({ icon: Icon, label }) => (
-              <div
-                key={label}
-                className="glass-panel flex flex-col justify-between items-start gap-3 rounded-2xl p-5 border border-espresso/10 hover:border-[#b5a48c]/50 transition-all duration-300 shadow-sm"
-              >
-                <div className="bg-[#b5a48c]/10 p-2.5 rounded-xl text-caramel">
-                  <Icon className="h-5 w-5 shrink-0" />
-                </div>
-                <span className="text-sm font-bold text-espresso leading-snug">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
+          {/* Headline */}
+          <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg text-balance bg-gradient-to-b from-white via-white to-surface-variant/40 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+            Tus cafés de siempre,<br className="hidden md:block" /> ahora con <span className="font-bold bg-gradient-to-br from-secondary-fixed via-secondary-fixed-dim to-on-secondary-fixed-variant bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(214,196,171,0.3)]">recompensa</span>.
+          </h1>
 
-          {/* Elegant geometric separator strip */}
-          <div className="w-full pt-4 border-t border-espresso/5">
-            <BrandPattern count={2} className="text-espresso/15" />
-          </div>
-        </div>
+          {/* Descriptive Text */}
+          <p className="mt-6 text-body-md md:text-body-lg font-body-md md:font-body-lg text-surface-variant/80 text-balance max-w-lg mx-auto">
+            Juntá sellos digitales en cada visita. Al llegar a 5 consumos, te regalamos el próximo café. Así de simple, rápido y 100% digital.
+          </p>
+        </header>
 
-        {/* Right Side: Authentication container */}
-        <div className="relative">
-          {/* Accent light block behind the card */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#b5a48c]/20 to-transparent blur-3xl -z-10 rounded-3xl" />
-          <MagicLinkForm />
-        </div>
-      </section>
-    </main>
+        {/* Form Section */}
+        <MagicLinkForm />
+
+      </main>
+    </>
   );
 }

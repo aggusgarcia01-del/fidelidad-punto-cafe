@@ -7,10 +7,10 @@ type ButtonProps = ComponentPropsWithoutRef<"button"> & {
 };
 
 const variants = {
-  primary: "bg-espresso text-cream shadow-lift hover:bg-espresso/92",
+  primary: "bg-inverse-on-surface text-primary-container shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed hover:-translate-y-0.5",
   secondary:
-    "border border-espresso/12 bg-porcelain text-espresso hover:bg-oat/40",
-  ghost: "text-espresso/70 hover:bg-espresso/5",
+    "border border-surface-variant/30 bg-transparent text-surface-variant hover:border-secondary-fixed-dim hover:text-secondary-fixed-dim hover:-translate-y-0.5",
+  ghost: "text-surface-variant/60 hover:bg-surface-variant/10 hover:text-surface-variant",
 };
 
 export function Button({
