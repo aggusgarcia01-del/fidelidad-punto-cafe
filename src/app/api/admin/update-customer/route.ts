@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/server/admin-auth";
 import { assertSupabaseAdminEnv, supabaseAdmin } from "@/lib/supabase/admin";
+import type { Database } from "@/types/database";
 
 export async function POST(request: NextRequest) {
   const admin = await requireAdmin();
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Falta userId" }, { status: 400 });
   }
 
-  const updates: Record<string, string | null> = {};
+  const updates: Partial<Database["public"]["Tables"]["users"]["Update"]> = {};
   if (fullName !== undefined) updates.full_name = fullName;
   if (phone !== undefined) updates.phone = phone;
   if (dni !== undefined) updates.dni = dni;
