@@ -6,6 +6,8 @@ import type { Database } from "@/types/database";
 
 type LoyaltyCard = Database["public"]["Tables"]["loyalty_cards"]["Row"];
 
+import { verifyQRToken } from "@/lib/qr-token";
+
 export async function POST(request: NextRequest) {
   const admin = await requireAdmin();
 
@@ -15,9 +17,21 @@ export async function POST(request: NextRequest) {
 
   assertSupabaseAdminEnv();
 
-  const { userId } = (await request.json().catch(() => ({}))) as {
+  const body = (await request.json().catch(() => ({}))) as {
     userId?: string;
+    qrToken?: string;
   };
+
+  let userId = body.userId;
+
+  if (body.qrToken) {
+    try {
+      const payload = await verifyQRToken(body.qrToken);
+      userId = payload.userId;
+    } catch (err) {
+      return NextResponse.json({ error: "El código QR es inválido o ha expirado." }, { status: 400 });
+    }
+  }
 
   if (!userId) {
     return NextResponse.json({ error: "Cliente requerido" }, { status: 400 });

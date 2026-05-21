@@ -33,50 +33,49 @@ export default function HomePage() {
         {/* Loyalty Progress Visual */}
         <section aria-label="Progreso de lealtad" className="flex flex-col items-center mb-12 w-full">
           <div className="flex items-center justify-center gap-2 md:gap-4">
-            {/* Stamp 1 (Collected) */}
+            {/* Stamp 1 */}
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary-fixed-dim/20 border border-secondary-fixed-dim flex items-center justify-center shadow-[0_0_15px_rgba(214,196,171,0.2)]">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full shadow-[0_0_15px_rgba(214,196,171,0.2)]" src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
-              </div>
-            </div>
-            {/* Connector Line */}
-            <div className="w-4 md:w-8 h-[1px] bg-secondary-fixed-dim/50"></div>
-            
-            {/* Stamp 2 (Collected) */}
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary-fixed-dim/20 border border-secondary-fixed-dim flex items-center justify-center shadow-[0_0_15px_rgba(214,196,171,0.2)]">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full shadow-[0_0_15px_rgba(214,196,171,0.2)]" src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
               </div>
             </div>
             {/* Connector Line */}
             <div className="w-4 md:w-8 h-[1px] bg-surface-variant/20"></div>
             
-            {/* Stamp 3 (Empty) */}
+            {/* Stamp 2 */}
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-transparent border border-surface-variant/20 flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30" src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0.5s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
               </div>
             </div>
             {/* Connector Line */}
             <div className="w-4 md:w-8 h-[1px] bg-surface-variant/20"></div>
             
-            {/* Stamp 4 (Empty) */}
+            {/* Stamp 3 */}
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-transparent border border-surface-variant/20 flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30" src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
               </div>
             </div>
             {/* Connector Line */}
             <div className="w-4 md:w-8 h-[1px] bg-surface-variant/20"></div>
             
-            {/* Stamp 5 (Empty - Reward) */}
+            {/* Stamp 4 */}
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1.5s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+              </div>
+            </div>
+            {/* Connector Line */}
+            <div className="w-4 md:w-8 h-[1px] bg-surface-variant/20"></div>
+            
+            {/* Stamp 5 (Reward) */}
             <div className="flex flex-col items-center relative">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-transparent border border-surface-variant/20 border-dashed flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30" src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-secondary-fixed-dim border-dashed flex items-center justify-center">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '2s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
               </div>
             </div>
           </div>
-          <p className="font-label-sm text-label-sm text-surface-variant/60 mt-4 tracking-wide">2 DE 5 COMPLETADOS</p>
         </section>
 
         {/* Form Section */}

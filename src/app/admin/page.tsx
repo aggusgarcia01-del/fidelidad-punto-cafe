@@ -16,6 +16,7 @@ import {
   QrCode
 } from "lucide-react";
 import type { Database, LoyaltyCustomer, LoyaltyEvent } from "@/types/database";
+import { QRScanner } from "@/components/admin/qr-scanner";
 
 type SuccessData = { customerName: string; stamps: number; message: string };
 type Card = Database["public"]["Tables"]["loyalty_cards"]["Row"];
@@ -111,7 +112,6 @@ export default function AdminPage() {
 
   // QR scanner states
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
-  const scannerRef = useRef<import("html5-qrcode").Html5Qrcode | null>(null);
 
   const birthdayToday = selectedCustomer ? isBirthdayToday(selectedCustomer.birth_date) : false;
 
@@ -365,82 +365,59 @@ export default function AdminPage() {
   };
 
   // QR Scanner logics
-  const startScanner = async () => {
-    try {
-      const { Html5Qrcode } = await import("html5-qrcode");
-      // Wait a frame to guarantee the element exists in DOM
-      setTimeout(async () => {
-        try {
-          const html5QrCode = new Html5Qrcode("qr-reader");
-          scannerRef.current = html5QrCode;
-
-          await html5QrCode.start(
-            { facingMode: "environment" },
-            {
-              fps: 10,
-              qrbox: { width: 250, height: 250 },
-            },
-            (decodedText) => {
-              handleQrScanned(decodedText);
-            },
-            () => {
-              // silent scanning failures
-            }
-          );
-        } catch (scannerErr) {
-          console.error("Scanner start error inside microtask:", scannerErr);
-        }
-      }, 100);
-    } catch (err) {
-      console.error("Error dynamically importing html5-qrcode:", err);
-      setError("No se pudo iniciar la cámara.");
-    }
-  };
-
-  const stopScanner = async () => {
-    if (scannerRef.current) {
+  const handleQrScanned = async (text: string) => {
+    // Check if it looks like a JWT token (QRToken)
+    if (text.split('.').length === 3) {
+      setIsQrModalOpen(false);
+      setLoading(true);
+      setError(null);
       try {
-        await scannerRef.current.stop();
-      } catch (err) {
-        console.error("Error stopping scanner:", err);
-      }
-      scannerRef.current = null;
-    }
-  };
-
-  const handleQrScanned = (text: string) => {
-    try {
-      const data = JSON.parse(text);
-      if (data.dni && data.code) {
-        setDni(formatDni(data.dni));
-        setCode(data.code);
-        setIsQrModalOpen(false);
-
-        // Find customer if exists
-        const rawDni = data.dni.replace(/\D/g, "");
-        const found = customers.find(c => c.dni === rawDni);
-        if (found) {
-          selectCustomer(found);
+        const response = await fetch("/api/admin/add-stamp", {
+          method: "POST",
+          body: JSON.stringify({ qrToken: text }),
+        });
+        const json = await response.json();
+        
+        if (!response.ok) {
+          setError(json.error || "No se pudo agregar el sello via QR.");
+          return;
         }
+
+        setSuccess({
+          customerName: json.card?.customer?.full_name || "Cliente (QR)",
+          stamps: json.card.stamps,
+          message: json.message
+        });
+
+        // Refresh UI
+        void loadCustomers(searchQuery);
+        
+        setTimeout(() => setSuccess(null), 3000);
+      } catch {
+        setError("Error de red al procesar el QR.");
+      } finally {
+        setLoading(false);
       }
-    } catch {
-      console.error("Formato de QR no reconocido:", text);
+    } else {
+      // old format fallback
+      try {
+        const data = JSON.parse(text);
+        if (data.dni && data.code) {
+          setDni(formatDni(data.dni));
+          setCode(data.code);
+          setIsQrModalOpen(false);
+
+          const rawDni = data.dni.replace(/\D/g, "");
+          const found = customers.find(c => c.dni === rawDni);
+          if (found) {
+            selectCustomer(found);
+          }
+        }
+      } catch {
+        console.error("Formato de QR no reconocido:", text);
+      }
     }
   };
-
-  useEffect(() => {
-    if (isQrModalOpen) {
-      void startScanner();
-    } else {
-      void stopScanner();
-    }
-    return () => {
-      if (scannerRef.current) {
-        scannerRef.current.stop().catch(console.error);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQrModalOpen]);
 
   if (!isLogged) {
     return (
@@ -881,45 +858,10 @@ export default function AdminPage() {
 
       {/* QR Scanner Modal */}
       {isQrModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#121212] p-6 text-center shadow-2xl animate-scale-in">
-            {/* Close button */}
-            <button
-              type="button"
-              onClick={() => setIsQrModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-10"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            {/* Title */}
-            <div className="mb-4">
-              <h3 className="text-lg font-bold text-white">Escanear Código QR</h3>
-              <p className="text-xs text-gray-400">Enfoca el código QR de la app del cliente con la cámara.</p>
-            </div>
-
-            {/* Camera Viewport */}
-            <div className="relative w-full aspect-square bg-black rounded-2xl overflow-hidden border border-white/5 shadow-inner">
-              <div id="qr-reader" className="w-full h-full object-cover [&_video]:object-cover" />
-              {/* Overlay lines/focus indicator */}
-              <div className="absolute inset-8 border-2 border-brand-accent/30 rounded-2xl pointer-events-none animate-pulse flex items-center justify-center">
-                <div className="w-full h-[1px] bg-brand-accent/50" />
-              </div>
-            </div>
-
-            <p className="mt-4 text-xs text-gray-500">
-              Asegúrate de conceder permisos de acceso a la cámara.
-            </p>
-
-            <button
-              type="button"
-              onClick={() => setIsQrModalOpen(false)}
-              className="mt-6 w-full h-11 text-xs font-bold border border-white/10 hover:bg-white/5 rounded-xl transition-colors text-white"
-            >
-              Cancelar
-            </button>
-          </div>
-        </div>
+        <QRScanner 
+          onScan={handleQrScanned} 
+          onClose={() => setIsQrModalOpen(false)} 
+        />
       )}
     </div>
   );

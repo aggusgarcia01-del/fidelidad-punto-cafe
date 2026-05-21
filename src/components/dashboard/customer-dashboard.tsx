@@ -13,7 +13,8 @@ import {
 import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import { StampCard } from "@/components/loyalty/stamp-card";
-import { StampCode } from "@/components/StampCode";
+import { CustomerQR } from "@/components/dashboard/customer-qr";
+import { VisitHistory } from "@/components/dashboard/visit-history";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Database } from "@/types/database";
 
@@ -301,7 +302,7 @@ export function CustomerDashboard() {
                 : "El barista te pedirá el DNI o escaneará el código QR para sumar tu sello."}
             </p>
 
-            {!rewardReady && <StampCode dni={profile.user.dni} />}
+            {!rewardReady && <CustomerQR dni={profile.user.dni || ""} />}
 
             <div className="mt-8 flex items-center justify-center gap-2 text-sm font-semibold text-brand-accent">
               <Coffee className="h-4 w-4" />
@@ -325,6 +326,8 @@ export function CustomerDashboard() {
               Google Wallet
             </button>
           </div>
+
+          <VisitHistory />
         </section>
       </div>
 

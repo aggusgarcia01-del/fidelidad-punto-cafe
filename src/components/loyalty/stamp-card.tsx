@@ -42,32 +42,45 @@ export function StampCard({
           </div>
         </div>
 
-        {/* Stamps Row */}
-        <div className="mt-8 flex items-center justify-center py-4">
-          {[0, 1, 2, 3, 4].map(idx => {
-              const active = idx < stamps;
-              const isGift = idx === 4;
-              return (
-                  <div key={idx} className="flex items-center">
-                      <div className="flex flex-col items-center gap-2">
-                        <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''}`}>
-                            {isGift ? <Gift className="h-5 w-5" /> : (
-                              <svg viewBox="0 0 100 100" className="h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="6"/>
-                                <circle cx="50" cy="50" r="30" fill="currentColor"/>
-                                <path d="M34 50 A 16 16 0 0 1 50 34" stroke={active ? "#d4af37" : "currentColor"} strokeWidth="4.5" strokeLinecap="round"/>
-                                <circle cx="50" cy="50" r="7" stroke={active ? "#d4af37" : "currentColor"} strokeWidth="3"/>
-                                <circle cx="50" cy="50" r="2" fill={active ? "#d4af37" : "currentColor"}/>
-                              </svg>
-                            )}
+        {/* Stamps Row or Reward Celebration */}
+        {stamps >= 5 ? (
+          <div className="mt-8 flex flex-col items-center justify-center py-6 animate-fade-in">
+            <div className="relative mb-4">
+              <div className="absolute inset-0 bg-brand-accent/20 blur-xl rounded-full"></div>
+              <div className="relative h-24 w-24 bg-brand-accent/10 border border-brand-accent/30 rounded-full flex items-center justify-center text-brand-accent shadow-[0_0_30px_rgba(212,175,55,0.3)] animate-pulse-glow">
+                <Gift className="h-10 w-10 animate-bounce" />
+              </div>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">¡Café Gratis de Autor!</h3>
+            <p className="text-sm text-gray-400 text-center max-w-xs">Muestra tu código al barista para canjear tu merecida recompensa.</p>
+          </div>
+        ) : (
+          <div className="mt-8 flex items-center justify-center py-4">
+            {[0, 1, 2, 3, 4].map(idx => {
+                const active = idx < stamps;
+                const isGift = idx === 4;
+                return (
+                    <div key={idx} className="flex items-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''}`}>
+                              {isGift ? <Gift className="h-5 w-5" /> : (
+                                <svg viewBox="0 0 100 100" className="h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="6"/>
+                                  <circle cx="50" cy="50" r="30" fill="currentColor"/>
+                                  <path d="M34 50 A 16 16 0 0 1 50 34" stroke={active ? "#d4af37" : "currentColor"} strokeWidth="4.5" strokeLinecap="round"/>
+                                  <circle cx="50" cy="50" r="7" stroke={active ? "#d4af37" : "currentColor"} strokeWidth="3"/>
+                                  <circle cx="50" cy="50" r="2" fill={active ? "#d4af37" : "currentColor"}/>
+                                </svg>
+                              )}
+                          </div>
+                          <span className="text-[10px] text-gray-500 font-medium">TAZA {idx + 1}</span>
                         </div>
-                        <span className="text-[10px] text-gray-500 font-medium">TAZA {idx + 1}</span>
-                      </div>
-                      {idx < 4 && <div className="h-[1px] w-4 sm:w-8 md:w-12 bg-white/10 mb-6 mx-2 sm:mx-4"></div>}
-                  </div>
-              );
-          })}
-        </div>
+                        {idx < 4 && <div className="h-[1px] w-4 sm:w-8 md:w-12 bg-white/10 mb-6 mx-2 sm:mx-4"></div>}
+                    </div>
+                );
+            })}
+          </div>
+        )}
 
         {/* Footer info box */}
         <div className="mt-8 flex flex-col gap-4 rounded-2xl bg-white/5 border border-white/5 p-4 sm:flex-row sm:items-center sm:justify-between">

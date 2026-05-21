@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
   if (!data || data.length === 0) {
     return NextResponse.json(
-      { error: "No encontramos una tarjeta con ese DNI." },
+      { error: "USER_NOT_FOUND", message: "No encontramos una tarjeta con ese DNI." },
       { status: 404 },
     );
   }

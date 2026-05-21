@@ -31,18 +31,16 @@ function FloatingInput({ id, label, type = "text", value, onChange, placeholder,
 type Mode = "dni" | "email";
 
 export function MagicLinkForm() {
-  const [mode, setMode] = useState<Mode>("dni");
+  const [step, setStep] = useState<"dni" | "register">("dni");
   const [fullName, setFullName] = useState("");
   const [dni, setDni] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const resetFeedback = () => {
-    setMessage(null);
     setError(null);
   };
 
@@ -52,11 +50,11 @@ export function MagicLinkForm() {
   };
 
   const handleDniChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value.replace(/\D/g, "").slice(0, 8); // max 8 dígitos
+    const raw = e.target.value.replace(/\D/g, "").slice(0, 8);
     setDni(formatDni(raw));
   };
 
-  const loginWithDni = async (event: FormEvent<HTMLFormElement>) => {
+  const checkDniAndLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     resetFeedback();
@@ -69,24 +67,29 @@ export function MagicLinkForm() {
         body: JSON.stringify({ dni: cleanDni }),
       });
       
-      const json = await response.json().catch(() => null) as { error?: string } | null;
+      const json = await response.json().catch(() => null) as { error?: string, message?: string } | null;
+
+      if (response.status === 404 && json?.error === "USER_NOT_FOUND") {
+        setStep("register");
+        return;
+      }
 
       if (!response.ok || !json) {
-        setError(json?.error ?? "No pudimos entrar con ese DNI.");
+        setError(json?.message ?? json?.error ?? "Error al intentar iniciar sesión.");
         return;
       }
 
       window.location.href = "/dashboard";
     } catch (caught) {
       setError(
-        caught instanceof Error ? caught.message : "Error al intentar iniciar sesión.",
+        caught instanceof Error ? caught.message : "Error de conexión.",
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const sendMagicLink = async (event: FormEvent<HTMLFormElement>) => {
+  const registerUser = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     resetFeedback();
@@ -94,80 +97,34 @@ export function MagicLinkForm() {
     const cleanDni = dni.replace(/\D/g, "");
 
     try {
-      const checkRes = await fetch("/api/auth/check-availability", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dni: cleanDni, email }),
+        body: JSON.stringify({ 
+          dni: cleanDni,
+          full_name: fullName,
+          phone,
+          email,
+          birth_date: birthDate
+        }),
       });
-      const checkJson = await checkRes.json().catch(() => null) as { available?: boolean; message?: string } | null;
-      if (!checkRes.ok || (checkJson && checkJson.available === false)) {
-        setError(checkJson?.message ?? "El DNI o correo ya están registrados.");
+      
+      const json = await response.json().catch(() => null) as { error?: string } | null;
+
+      if (!response.ok || !json) {
+        setError(json?.error ?? "Error al registrar el usuario.");
         setLoading(false);
         return;
       }
 
-      const supabase = createSupabaseBrowserClient();
-      const redirectTo = `${window.location.origin}/auth/callback`;
-      const { error: authError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: redirectTo,
-          data: {
-            full_name: fullName,
-            dni: cleanDni,
-            phone,
-            birth_date: birthDate,
-          },
-        },
-      });
-
-      if (authError) {
-        setError(authError.message);
-        return;
-      }
-
-      setMessage("¡Listo! Revisa tu email para crear o abrir tu tarjeta. (Puede que llegue a Spam)");
+      window.location.href = "/dashboard";
     } catch (caught) {
       setError(
-        caught instanceof Error ? caught.message : "No se pudo enviar el enlace.",
+        caught instanceof Error ? caught.message : "Error al registrarse.",
       );
-    } finally {
       setLoading(false);
     }
   };
-
-  const TabSwitcher = () => (
-    <div className="mb-8 grid grid-cols-2 gap-2 rounded-xl bg-white/5 p-1 border border-white/5">
-      <button
-        className={`h-10 rounded-lg text-sm font-bold transition-all ${
-          mode === "dni"
-            ? "bg-brand-accent/20 text-brand-accent shadow-[0_0_10px_rgba(212,175,55,0.2)]"
-            : "text-gray-500 hover:text-gray-300"
-        }`}
-        onClick={() => {
-          setMode("dni");
-          resetFeedback();
-        }}
-        type="button"
-      >
-        DNI Rápido
-      </button>
-      <button
-        className={`h-10 rounded-lg text-sm font-bold transition-all ${
-          mode === "email"
-            ? "bg-brand-accent/20 text-brand-accent shadow-[0_0_10px_rgba(212,175,55,0.2)]"
-            : "text-gray-500 hover:text-gray-300"
-        }`}
-        onClick={() => {
-          setMode("email");
-          resetFeedback();
-        }}
-        type="button"
-      >
-        Primera Vez
-      </button>
-    </div>
-  );
 
   return (
     <section className="w-full max-w-md relative group perspective-1000">
@@ -175,11 +132,14 @@ export function MagicLinkForm() {
       <div className="absolute -inset-1 bg-gradient-to-br from-secondary-fixed-dim/20 to-transparent rounded-xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
       
       <div className="relative bg-tertiary-container/40 backdrop-blur-xl border border-surface-variant/10 rounded-xl p-8 md:p-10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-        
-        <TabSwitcher />
 
-        {mode === "dni" ? (
-          <form className="flex flex-col gap-6" onSubmit={loginWithDni}>
+        {step === "dni" ? (
+          <form className="flex flex-col gap-6" onSubmit={checkDniAndLogin}>
+            <div className="text-center mb-2">
+              <h2 className="text-xl font-headline-md text-surface-variant font-bold mb-2">Ingresá tu DNI</h2>
+              <p className="text-surface-variant/60 text-sm">Si sos nuevo, te pediremos unos datos más en el próximo paso.</p>
+            </div>
+            
             <FloatingInput
               id="dni-login"
               label="DNI"
@@ -189,41 +149,50 @@ export function MagicLinkForm() {
               inputMode="numeric"
               value={dni}
               onChange={handleDniChange}
-              inputClassName="tracking-widest"
+              inputClassName="tracking-widest text-center text-xl"
             />
 
-            <Feedback message={message} error={error} />
+            <Feedback message={null} error={error} />
 
             <button 
               className="w-full bg-inverse-on-surface text-primary-container font-label-md text-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] disabled:opacity-50 group" 
               type="submit"
-              disabled={loading}
+              disabled={loading || !dni}
             >
-              <span>{loading ? "Entrando..." : "Entrar a mi tarjeta"}</span>
+              <span>{loading ? "Verificando..." : "Continuar"}</span>
               {!loading && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
             </button>
           </form>
         ) : (
-          <form className="flex flex-col gap-6" onSubmit={sendMagicLink}>
-            <FloatingInput id="fullname" label="Nombre Completo" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-            <FloatingInput id="dni-reg" label="DNI" type="text" inputMode="numeric" value={dni} onChange={handleDniChange} inputClassName="tracking-widest" required />
-            <FloatingInput id="phone" label="Teléfono" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-            <FloatingInput id="birthdate" label="Fecha de Nacimiento" type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required />
-            <div className="mb-2"><FloatingInput id="email" label="Correo Electrónico" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
+          <form className="flex flex-col gap-5" onSubmit={registerUser}>
+            <div className="text-center mb-2">
+              <h2 className="text-xl font-headline-md text-secondary-fixed-dim font-bold mb-1">¡Primera vez!</h2>
+              <p className="text-surface-variant/80 text-sm">Completá tus datos para crear tu tarjeta digital.</p>
+            </div>
+            
+            <FloatingInput id="fullname" label="Nombre Completo *" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+            <FloatingInput id="dni-reg" label="DNI *" type="text" inputMode="numeric" value={dni} onChange={handleDniChange} inputClassName="tracking-widest" required />
+            <FloatingInput id="phone" label="Teléfono (Opcional)" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <FloatingInput id="birthdate" label="Fecha de Nacimiento (Opcional)" type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
+            <div className="mb-2"><FloatingInput id="email" label="Correo Electrónico (Opcional)" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
 
-            <Feedback message={message} error={error} />
+            <Feedback message={null} error={error} />
 
             <button 
               className="w-full bg-inverse-on-surface text-primary-container font-label-md text-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] disabled:opacity-50 group" 
               type="submit"
               disabled={loading}
             >
-              <span>{loading ? "Enviando..." : "Registrarse y Enviar Enlace"}</span>
+              <span>{loading ? "Registrando..." : "Crear mi Tarjeta"}</span>
               {!loading && <Sparkles className="h-4 w-4 transition-transform group-hover:scale-110" />}
             </button>
-            <p className="font-label-sm text-label-sm text-surface-variant/50 text-center mt-2">
-              Al registrarte, aceptas nuestros términos de servicio.
-            </p>
+            <button 
+              type="button" 
+              onClick={() => { setStep("dni"); setError(null); }}
+              className="text-sm text-surface-variant/50 hover:text-surface-variant transition-colors"
+            >
+              ← Volver
+            </button>
           </form>
         )}
       </div>

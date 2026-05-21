@@ -103,6 +103,16 @@ const config: Config = {
       },
       backgroundImage: {
         'premium-gradient': 'radial-gradient(circle at top center, rgba(212, 175, 55, 0.15), transparent 40%), linear-gradient(to bottom, #121212, #0a0a0a)',
+      },
+      keyframes: {
+        'stamp-fill': {
+          '0%, 100%': { opacity: '0.3', transform: 'scale(0.95)', filter: 'brightness(0.8)' },
+          '15%, 85%': { opacity: '1', transform: 'scale(1.1)', filter: 'brightness(1.2)' },
+          '25%, 75%': { opacity: '1', transform: 'scale(1)', filter: 'brightness(1)' },
+        }
+      },
+      animation: {
+        'stamp-fill': 'stamp-fill 4s ease-in-out infinite',
       }
     },
   },
