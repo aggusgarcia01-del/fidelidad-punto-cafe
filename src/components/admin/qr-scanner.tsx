@@ -1,108 +1,96 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import jsQR from "jsqr";
+import { Html5Qrcode } from "html5-qrcode";
+import { X } from "lucide-react";
 
 export function QRScanner({ onScan, onClose }: { onScan: (token: string) => void; onClose: () => void }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const scannerRef = useRef<Html5Qrcode | null>(null);
 
   useEffect(() => {
-    let stream: MediaStream | null = null;
-    let scanInterval: NodeJS.Timeout;
+    let isMounted = true;
 
-    const startCamera = async () => {
+    const startScanner = async () => {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-        });
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        scannerRef.current = html5QrCode;
 
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-
-        let isScanning = true;
-
-        const scanFrame = () => {
-          if (!isScanning) return;
-
-          const video = videoRef.current;
-          const canvas = canvasRef.current;
-          
-          if (video && canvas && video.readyState === video.HAVE_ENOUGH_DATA) {
-            const ctx = canvas.getContext("2d", { willReadFrequently: true });
-            if (ctx) {
-              canvas.width = video.videoWidth;
-              canvas.height = video.videoHeight;
-              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-              const code = jsQR(imageData.data, canvas.width, canvas.height, {
-                inversionAttempts: "attemptBoth",
-              });
-
-              if (code && code.data) {
-                isScanning = false;
-                onScan(code.data);
-                return;
-              }
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0,
+          },
+          (decodedText) => {
+            if (isMounted) {
+              onScan(decodedText);
             }
+          },
+          (errorMessage) => {
+            // Ignore scan failures (usually just means no QR in view)
           }
-          
-          // Use setTimeout instead of requestAnimationFrame to avoid maxing out CPU
-          scanInterval = setTimeout(scanFrame, 250);
-        };
-
-        // Start scanning loop
-        scanFrame();
+        );
       } catch (err) {
-        setError("No se pudo acceder a la cámara. Revisa los permisos.");
+        if (isMounted) {
+          setError("Error al acceder a la cámara. Revisa los permisos.");
+        }
       }
     };
 
-    startCamera();
+    // Initialize scanner
+    startScanner();
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      isMounted = false;
+      if (scannerRef.current && scannerRef.current.isScanning) {
+        scannerRef.current.stop().catch(() => {});
       }
-      clearTimeout(scanInterval);
     };
   }, [onScan]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4">
-      <div className="relative w-full max-w-sm rounded-3xl overflow-hidden bg-black border border-white/10 shadow-2xl">
-        <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10 bg-gradient-to-b from-black/80 to-transparent">
-          <h3 className="text-white font-bold tracking-widest text-sm uppercase">Escáner QR</h3>
-          <button onClick={onClose} className="text-white/70 hover:text-white p-2">
-            ✕
-          </button>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#121212] p-6 text-center shadow-2xl animate-scale-in flex flex-col">
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-10 bg-black/50 p-2 rounded-full"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* Title */}
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-white">Escanear Código QR</h3>
+          <p className="text-xs text-gray-400">Enfoca el código QR de la app del cliente.</p>
         </div>
 
         {error ? (
-          <div className="p-8 text-center aspect-square flex items-center justify-center">
+          <div className="p-8 text-center aspect-square flex items-center justify-center bg-white/5 rounded-2xl">
             <p className="text-error font-medium">{error}</p>
           </div>
         ) : (
-          <div className="relative aspect-square w-full">
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full object-cover"
-              {...({ "webkit-playsinline": "true" } as any)}
-            />
-            {/* Overlay target */}
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-              <div className="w-[70%] h-[70%] border-2 border-brand-accent/50 rounded-2xl animate-pulse"></div>
+          /* Camera Viewport */
+          <div className="relative w-full aspect-square bg-black rounded-2xl overflow-hidden border border-white/5 shadow-inner">
+            <div id="qr-reader" className="w-full h-full object-cover [&_video]:object-cover" />
+            {/* Overlay lines/focus indicator */}
+            <div className="absolute inset-8 border-2 border-brand-accent/30 rounded-2xl pointer-events-none animate-pulse flex items-center justify-center z-10">
+              <div className="w-full h-[1px] bg-brand-accent/50" />
             </div>
           </div>
         )}
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-6 w-full h-11 text-xs font-bold border border-white/10 hover:bg-white/5 rounded-xl transition-colors text-white"
+        >
+          Cancelar
+        </button>
       </div>
-      <canvas ref={canvasRef} style={{ display: "none" }} />
     </div>
   );
 }
