@@ -43,7 +43,7 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className={`${plusJakarta.variable} ${hankenGrotesk.variable} font-sans antialiased bg-primary-container text-inverse-on-surface selection:bg-secondary-fixed-dim selection:text-primary-container`}>
+      <body className={`${plusJakarta.variable} ${hankenGrotesk.variable} font-sans antialiased bg-premium-gradient selection:bg-brand-accent selection:text-brand-black`}>
         {children}
         <PwaRegister />
       </body>

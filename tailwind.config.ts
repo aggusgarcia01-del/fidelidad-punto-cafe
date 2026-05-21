@@ -11,6 +11,13 @@ const config: Config = {
         caramel: "#b5a48c",
         oat: "#E8D9C9",
         porcelain: "#FFFDFC",
+        brand: {
+          black: '#121212',
+          dark: '#1a1a1a',
+          gray: '#2a2a2a',
+          light: '#f5f5f5',
+          accent: '#d4af37',
+        },
         
         "surface-variant": "#e2e2e2",
         "on-primary-container": "#858383",
@@ -93,6 +100,9 @@ const config: Config = {
         "headline-lg": ["32px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700" }],
         "headline-md": ["24px", { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "600" }],
         "body-lg": ["18px", { lineHeight: "1.6", letterSpacing: "0em", fontWeight: "400" }]
+      },
+      backgroundImage: {
+        'premium-gradient': 'radial-gradient(circle at top center, rgba(212, 175, 55, 0.15), transparent 40%), linear-gradient(to bottom, #121212, #0a0a0a)',
       }
     },
   },

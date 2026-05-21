@@ -4,8 +4,100 @@
 
 @layer base {
   body {
+    background-color: #121212;
+    color: #f5f5f5;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+@layer components {
+  .glass-panel {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-card {
+    background: rgba(42, 42, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .glass-card:hover {
+    background: rgba(50, 50, 50, 0.6);
+    border-color: rgba(212, 175, 55, 0.2);
+  }
+
+  .premium-input {
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .premium-input:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.3);
+    outline: none;
+  }
+
+  .btn-glow {
+    background: white;
+    color: black;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-glow:hover {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .stamp-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(20, 20, 20, 0.5);
+    position: relative;
+  }
+  
+  .stamp-circle.active {
+    border-color: rgba(212, 175, 55, 0.5);
+    background: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  }
+
+  .stamp-circle svg, .stamp-circle i {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.25rem;
+  }
+
+  .stamp-circle.active svg, .stamp-circle.active i {
+    color: #d4af37;
+  }
+
+  .stamp-circle.gift svg, .stamp-circle.gift i {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Material Symbols Outlined Configuration */

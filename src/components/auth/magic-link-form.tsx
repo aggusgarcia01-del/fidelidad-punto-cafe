@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 type Mode = "dni" | "email";
 
@@ -21,15 +22,27 @@ export function MagicLinkForm() {
     setError(null);
   };
 
+  const formatDni = (val: string) => {
+    const raw = val.replace(/\D/g, "");
+    return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  const handleDniChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, "").slice(0, 8); // max 8 dígitos
+    setDni(formatDni(raw));
+  };
+
   const loginWithDni = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     resetFeedback();
 
+    const cleanDni = dni.replace(/\D/g, "");
+
     try {
       const response = await fetch("/api/auth/dni-login", {
         method: "POST",
-        body: JSON.stringify({ dni }),
+        body: JSON.stringify({ dni: cleanDni }),
       });
       
       const json = await response.json().catch(() => null) as { error?: string } | null;
@@ -54,6 +67,8 @@ export function MagicLinkForm() {
     setLoading(true);
     resetFeedback();
 
+    const cleanDni = dni.replace(/\D/g, "");
+
     try {
       const supabase = createSupabaseBrowserClient();
       const redirectTo = `${window.location.origin}/auth/callback`;
@@ -63,7 +78,7 @@ export function MagicLinkForm() {
           emailRedirectTo: redirectTo,
           data: {
             full_name: fullName,
-            dni,
+            dni: cleanDni,
             phone,
             birth_date: birthDate,
           },
@@ -75,7 +90,7 @@ export function MagicLinkForm() {
         return;
       }
 
-      setMessage("Listo. Revisa tu email para crear o abrir tu tarjeta.");
+      setMessage("¡Listo! Revisa tu email para crear o abrir tu tarjeta. (Puede que llegue a Spam)");
     } catch (caught) {
       setError(
         caught instanceof Error ? caught.message : "No se pudo enviar el enlace.",
@@ -85,14 +100,13 @@ export function MagicLinkForm() {
     }
   };
 
-  // Switcher Component
   const TabSwitcher = () => (
-    <div className="mb-8 grid grid-cols-2 gap-2 rounded-lg bg-surface-variant/10 p-1">
+    <div className="mb-8 grid grid-cols-2 gap-2 rounded-xl bg-white/5 p-1 border border-white/5">
       <button
-        className={`h-10 rounded-md text-sm font-semibold transition ${
+        className={`h-10 rounded-lg text-sm font-bold transition-all ${
           mode === "dni"
-            ? "bg-secondary-fixed-dim text-on-secondary-fixed shadow-sm"
-            : "text-surface-variant/60 hover:text-surface-variant"
+            ? "bg-brand-accent/20 text-brand-accent shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+            : "text-gray-500 hover:text-gray-300"
         }`}
         onClick={() => {
           setMode("dni");
@@ -103,10 +117,10 @@ export function MagicLinkForm() {
         DNI Rápido
       </button>
       <button
-        className={`h-10 rounded-md text-sm font-semibold transition ${
+        className={`h-10 rounded-lg text-sm font-bold transition-all ${
           mode === "email"
-            ? "bg-secondary-fixed-dim text-on-secondary-fixed shadow-sm"
-            : "text-surface-variant/60 hover:text-surface-variant"
+            ? "bg-brand-accent/20 text-brand-accent shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+            : "text-gray-500 hover:text-gray-300"
         }`}
         onClick={() => {
           setMode("email");
@@ -122,9 +136,9 @@ export function MagicLinkForm() {
   return (
     <section className="w-full max-w-md relative group perspective-1000">
       {/* Ambient Glow */}
-      <div className="absolute -inset-1 bg-gradient-to-br from-secondary-fixed-dim/20 to-transparent rounded-xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+      <div className="absolute -inset-1 bg-gradient-to-br from-brand-accent/10 to-transparent rounded-2xl blur-2xl opacity-50 transition-opacity duration-500"></div>
       
-      <div className="relative bg-tertiary-container/40 backdrop-blur-xl border border-surface-variant/10 rounded-xl p-8 md:p-10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+      <div className="relative glass-panel rounded-3xl p-8 md:p-10 shadow-2xl">
         
         <TabSwitcher />
 
@@ -132,17 +146,17 @@ export function MagicLinkForm() {
           <form className="flex flex-col gap-6" onSubmit={loginWithDni}>
             <div className="relative pt-2">
               <input 
-                className="peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent" 
+                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent text-lg tracking-widest" 
                 id="dni-login" 
                 placeholder="DNI" 
                 required 
                 type="text" 
                 inputMode="numeric"
                 value={dni}
-                onChange={(e) => setDni(e.target.value)}
+                onChange={handleDniChange}
               />
               <label 
-                className="absolute left-0 top-4 text-surface-variant font-body-md text-body-md cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-label-sm peer-focus:font-label-sm peer-focus:text-secondary-fixed-dim peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-surface-variant" 
+                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
                 htmlFor="dni-login"
               >
                 DNI
@@ -152,19 +166,19 @@ export function MagicLinkForm() {
             <Feedback message={message} error={error} />
 
             <button 
-              className="w-full bg-inverse-on-surface text-primary-container font-label-md text-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none mt-2" 
+              className="w-full btn-glow font-bold text-sm py-4 rounded-xl flex items-center justify-center gap-2 mt-2 disabled:opacity-50 transition-transform active:scale-95 group" 
               type="submit"
               disabled={loading}
             >
-              <span className="">{loading ? "Entrando..." : "Entrar a mi tarjeta"}</span>
-              {!loading && <span className="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>}
+              <span>{loading ? "Entrando..." : "Entrar a mi tarjeta"}</span>
+              {!loading && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
             </button>
           </form>
         ) : (
           <form className="flex flex-col gap-6" onSubmit={sendMagicLink}>
             <div className="relative pt-2">
               <input 
-                className="peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent" 
+                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent" 
                 id="fullname" 
                 placeholder="Nombre Completo" 
                 required 
@@ -173,7 +187,7 @@ export function MagicLinkForm() {
                 onChange={(e) => setFullName(e.target.value)}
               />
               <label 
-                className="absolute left-0 top-4 text-surface-variant font-body-md text-body-md cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-label-sm peer-focus:font-label-sm peer-focus:text-secondary-fixed-dim peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-surface-variant" 
+                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
                 htmlFor="fullname"
               >
                 Nombre Completo
@@ -182,17 +196,17 @@ export function MagicLinkForm() {
 
             <div className="relative pt-2">
               <input 
-                className="peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent" 
+                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent tracking-widest" 
                 id="dni-reg" 
                 placeholder="DNI" 
                 required 
                 type="text" 
                 inputMode="numeric"
                 value={dni}
-                onChange={(e) => setDni(e.target.value)}
+                onChange={handleDniChange}
               />
               <label 
-                className="absolute left-0 top-4 text-surface-variant font-body-md text-body-md cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-label-sm peer-focus:font-label-sm peer-focus:text-secondary-fixed-dim peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-surface-variant" 
+                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
                 htmlFor="dni-reg"
               >
                 DNI
@@ -201,7 +215,7 @@ export function MagicLinkForm() {
 
             <div className="relative pt-2">
               <input 
-                className="peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent" 
+                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent" 
                 id="phone" 
                 placeholder="Teléfono" 
                 required 
@@ -210,7 +224,7 @@ export function MagicLinkForm() {
                 onChange={(e) => setPhone(e.target.value)}
               />
               <label 
-                className="absolute left-0 top-4 text-surface-variant font-body-md text-body-md cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-label-sm peer-focus:font-label-sm peer-focus:text-secondary-fixed-dim peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-surface-variant" 
+                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
                 htmlFor="phone"
               >
                 Teléfono
@@ -219,7 +233,7 @@ export function MagicLinkForm() {
 
             <div className="relative pt-2">
               <input 
-                className="peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent [color-scheme:dark]" 
+                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent [color-scheme:dark]" 
                 id="birthdate" 
                 placeholder="Fecha de Nacimiento" 
                 required 
@@ -228,7 +242,7 @@ export function MagicLinkForm() {
                 onChange={(e) => setBirthDate(e.target.value)}
               />
               <label 
-                className="absolute left-0 -top-2 text-surface-variant font-label-sm text-label-sm transition-all duration-300 peer-focus:text-secondary-fixed-dim" 
+                className="absolute left-0 -top-2 text-gray-500 text-xs transition-all duration-300 peer-focus:text-brand-accent" 
                 htmlFor="birthdate"
               >
                 Fecha de Nacimiento
@@ -237,7 +251,7 @@ export function MagicLinkForm() {
 
             <div className="relative pt-2 mb-2">
               <input 
-                className="peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent" 
+                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent" 
                 id="email" 
                 placeholder="Correo Electrónico" 
                 required 
@@ -246,7 +260,7 @@ export function MagicLinkForm() {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <label 
-                className="absolute left-0 top-4 text-surface-variant font-body-md text-body-md cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-label-sm peer-focus:font-label-sm peer-focus:text-secondary-fixed-dim peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-surface-variant" 
+                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
                 htmlFor="email"
               >
                 Correo Electrónico
@@ -256,14 +270,14 @@ export function MagicLinkForm() {
             <Feedback message={message} error={error} />
 
             <button 
-              className="w-full bg-inverse-on-surface text-primary-container font-label-md text-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none mt-2" 
+              className="w-full btn-glow font-bold text-sm py-4 rounded-xl flex items-center justify-center gap-2 mt-2 disabled:opacity-50 transition-transform active:scale-95 group" 
               type="submit"
               disabled={loading}
             >
-              <span className="">{loading ? "Enviando..." : "Registrarse"}</span>
-              {!loading && <span className="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">auto_awesome</span>}
+              <span>{loading ? "Enviando..." : "Registrarse y Enviar Enlace"}</span>
+              {!loading && <Sparkles className="h-4 w-4 transition-transform group-hover:scale-110" />}
             </button>
-            <p className="font-label-sm text-label-sm text-surface-variant/50 text-center mt-2">
+            <p className="text-xs text-gray-500 text-center mt-2">
               Al registrarte, aceptas nuestros términos de servicio.
             </p>
           </form>
@@ -282,17 +296,17 @@ function Feedback({
 }) {
   if (message) {
     return (
-      <p className="rounded-lg bg-secondary-fixed-dim/10 border border-secondary-fixed-dim/20 px-4 py-3 text-sm font-medium text-secondary-fixed-dim">
+      <div className="rounded-xl bg-brand-accent/10 border border-brand-accent/20 px-4 py-4 text-sm font-medium text-brand-accent text-center">
         {message}
-      </p>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <p className="rounded-lg bg-red-900/20 border border-red-500/20 px-4 py-3 text-sm font-medium text-red-400">
+      <div className="rounded-xl bg-red-900/20 border border-red-500/20 px-4 py-4 text-sm font-medium text-red-400 text-center">
         {error}
-      </p>
+      </div>
     );
   }
 
