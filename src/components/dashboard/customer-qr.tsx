@@ -24,7 +24,7 @@ export function CustomerQR({ dni }: { dni: string }) {
         const url = await QRCode.toDataURL(data.token, {
           width: 200,
           margin: 1,
-          color: { dark: "#1a1c1c", light: "#FFFDFC" },
+          color: { dark: "#000000", light: "#FFFFFF" },
         });
         setQrDataUrl(url);
       }

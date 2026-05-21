@@ -22,27 +22,40 @@ export function QRScanner({ onScan, onClose }: { onScan: (token: string) => void
           videoRef.current.srcObject = stream;
         }
 
-        scanInterval = setInterval(() => {
+        let isScanning = true;
+
+        const scanFrame = () => {
+          if (!isScanning) return;
+
           const video = videoRef.current;
           const canvas = canvasRef.current;
-          if (!video || !canvas || video.readyState !== 4) return;
+          
+          if (video && canvas && video.readyState === video.HAVE_ENOUGH_DATA) {
+            const ctx = canvas.getContext("2d", { willReadFrequently: true });
+            if (ctx) {
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-          const ctx = canvas.getContext("2d");
-          if (!ctx) return;
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const code = jsQR(imageData.data, canvas.width, canvas.height, {
+                inversionAttempts: "attemptBoth",
+              });
 
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const code = jsQR(imageData.data, canvas.width, canvas.height, {
-            inversionAttempts: "dontInvert",
-          });
-
-          if (code && code.data) {
-            onScan(code.data);
+              if (code && code.data) {
+                isScanning = false;
+                onScan(code.data);
+                return;
+              }
+            }
           }
-        }, 300); // Scans 3 times a second
+          
+          // Use setTimeout instead of requestAnimationFrame to avoid maxing out CPU
+          scanInterval = setTimeout(scanFrame, 250);
+        };
+
+        // Start scanning loop
+        scanFrame();
       } catch (err) {
         setError("No se pudo acceder a la cámara. Revisa los permisos.");
       }
@@ -54,7 +67,7 @@ export function QRScanner({ onScan, onClose }: { onScan: (token: string) => void
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
       }
-      clearInterval(scanInterval);
+      clearTimeout(scanInterval);
     };
   }, [onScan]);
 
@@ -78,7 +91,9 @@ export function QRScanner({ onScan, onClose }: { onScan: (token: string) => void
               ref={videoRef}
               autoPlay
               playsInline
+              muted
               className="w-full h-full object-cover"
+              {...({ "webkit-playsinline": "true" } as any)}
             />
             {/* Overlay target */}
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">

@@ -484,7 +484,7 @@ export default function AdminPage() {
       <main className="flex-1 flex overflow-hidden p-4 md:p-6 gap-6 max-w-[1600px] mx-auto w-full flex-col md:flex-row">
         
         {/* Left Sidebar (Client List) */}
-        <aside className={`w-full md:w-[350px] flex flex-col gap-4 ${selectedCustomer ? 'hidden md:flex' : 'flex'}`}>
+        <aside className={`w-full md:w-[350px] flex flex-col gap-4 ${selectedCustomer ? 'hidden md:flex' : 'flex'} order-2 md:order-1`}>
           <div className="flex justify-between items-center mb-1">
             <div>
               <h2 className="text-xl font-bold text-white">Clientes</h2>
@@ -540,7 +540,7 @@ export default function AdminPage() {
         </aside>
 
         {/* Main Workspace */}
-        <section className={`flex-1 flex flex-col gap-6 overflow-y-auto pr-1 ${selectedCustomer ? 'flex' : 'hidden md:flex'}`}>
+        <section className={`flex-1 flex flex-col gap-6 overflow-y-auto pr-1 flex order-1 md:order-2`}>
           
           {/* Toast Notification */}
           {success && (
@@ -753,18 +753,26 @@ export default function AdminPage() {
           ) : (
             /* Blank state: Quick operations form */
             <div className="glass-panel rounded-2xl p-8 animate-scale-in">
-               <div className="flex justify-between items-center mb-4">
-                 <h2 className="text-2xl font-bold text-white">Carga Rápida de Sellos</h2>
+               
+               {/* BIG PRIMARY QR SCAN BUTTON */}
+               <div className="mb-8 border-b border-white/5 pb-8">
+                 <h2 className="text-2xl font-bold text-white mb-2 text-center">Escanear Código QR</h2>
+                 <p className="text-sm text-gray-400 text-center mb-6">Usa la cámara para acreditar sellos al instante.</p>
                  <button
                    type="button"
                    onClick={() => setIsQrModalOpen(true)}
-                   className="flex items-center gap-1.5 text-xs text-brand-accent font-bold px-3 py-2 rounded-xl bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent/20 transition-all active:scale-95"
+                   className="w-full h-20 rounded-2xl bg-brand-accent text-black font-black text-xl flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(212,175,55,0.3)] hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(212,175,55,0.4)] transition-all active:scale-95"
                  >
-                   <QrCode className="h-4 w-4" /> Escanear QR con Cámara
+                   <QrCode className="h-8 w-8 stroke-[2.5px]" />
+                   INICIAR ESCÁNER
                  </button>
                </div>
+
+               <div className="flex justify-between items-center mb-4">
+                 <h3 className="text-lg font-bold text-white">Carga Manual</h3>
+               </div>
                <p className="text-sm text-gray-400 mb-8 max-w-lg">
-                  Si tienes el DNI y código a mano, ingrésalos aquí directamente. O busca y selecciona un cliente de la lista.
+                  Si la cámara no funciona o tienes el DNI a mano, ingresa el código del cliente manualmente.
                </p>
                <form onSubmit={addStamp} className="space-y-8 max-w-lg">
                   <div className="grid gap-8 sm:grid-cols-2">
