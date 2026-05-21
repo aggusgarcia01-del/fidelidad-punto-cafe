@@ -4,6 +4,30 @@ import { FormEvent, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { ArrowRight, Sparkles } from "lucide-react";
 
+function FloatingInput({ id, label, type = "text", value, onChange, placeholder, required = false, className = "", inputClassName = "", maxLength, inputMode }: { id: string; label: string; type?: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string; required?: boolean; className?: string; inputClassName?: string; maxLength?: number; inputMode?: "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | "search" }) {
+  return (
+    <div className={`relative pt-2 ${className}`}>
+      <input
+        id={id}
+        type={type}
+        required={required}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        inputMode={inputMode}
+        className={`peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent ${inputClassName}`}
+      />
+      <label
+        htmlFor={id}
+        className={`absolute left-0 top-4 text-surface-variant font-body-md text-body-md cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-label-sm peer-focus:font-label-sm peer-focus:text-secondary-fixed-dim peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-surface-variant ${type === 'date' ? '-top-2 text-label-sm font-label-sm peer-focus:text-secondary-fixed-dim' : ''}`}
+      >
+        {label}
+      </label>
+    </div>
+  );
+}
+
 type Mode = "dni" | "email";
 
 export function MagicLinkForm() {
@@ -70,6 +94,18 @@ export function MagicLinkForm() {
     const cleanDni = dni.replace(/\D/g, "");
 
     try {
+      const checkRes = await fetch("/api/auth/check-availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dni: cleanDni, email }),
+      });
+      const checkJson = await checkRes.json().catch(() => null) as { available?: boolean; message?: string } | null;
+      if (!checkRes.ok || (checkJson && checkJson.available === false)) {
+        setError(checkJson?.message ?? "El DNI o correo ya están registrados.");
+        setLoading(false);
+        return;
+      }
+
       const supabase = createSupabaseBrowserClient();
       const redirectTo = `${window.location.origin}/auth/callback`;
       const { error: authError } = await supabase.auth.signInWithOtp({
@@ -136,37 +172,30 @@ export function MagicLinkForm() {
   return (
     <section className="w-full max-w-md relative group perspective-1000">
       {/* Ambient Glow */}
-      <div className="absolute -inset-1 bg-gradient-to-br from-brand-accent/10 to-transparent rounded-2xl blur-2xl opacity-50 transition-opacity duration-500"></div>
+      <div className="absolute -inset-1 bg-gradient-to-br from-secondary-fixed-dim/20 to-transparent rounded-xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
       
-      <div className="relative glass-panel rounded-3xl p-8 md:p-10 shadow-2xl">
+      <div className="relative bg-tertiary-container/40 backdrop-blur-xl border border-surface-variant/10 rounded-xl p-8 md:p-10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
         
         <TabSwitcher />
 
         {mode === "dni" ? (
           <form className="flex flex-col gap-6" onSubmit={loginWithDni}>
-            <div className="relative pt-2">
-              <input 
-                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent text-lg tracking-widest" 
-                id="dni-login" 
-                placeholder="DNI" 
-                required 
-                type="text" 
-                inputMode="numeric"
-                value={dni}
-                onChange={handleDniChange}
-              />
-              <label 
-                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
-                htmlFor="dni-login"
-              >
-                DNI
-              </label>
-            </div>
+            <FloatingInput
+              id="dni-login"
+              label="DNI"
+              type="text"
+              placeholder="DNI"
+              required
+              inputMode="numeric"
+              value={dni}
+              onChange={handleDniChange}
+              inputClassName="tracking-widest"
+            />
 
             <Feedback message={message} error={error} />
 
             <button 
-              className="w-full btn-glow font-bold text-sm py-4 rounded-xl flex items-center justify-center gap-2 mt-2 disabled:opacity-50 transition-transform active:scale-95 group" 
+              className="w-full bg-inverse-on-surface text-primary-container font-label-md text-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] disabled:opacity-50 group" 
               type="submit"
               disabled={loading}
             >
@@ -176,108 +205,23 @@ export function MagicLinkForm() {
           </form>
         ) : (
           <form className="flex flex-col gap-6" onSubmit={sendMagicLink}>
-            <div className="relative pt-2">
-              <input 
-                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent" 
-                id="fullname" 
-                placeholder="Nombre Completo" 
-                required 
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-              <label 
-                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
-                htmlFor="fullname"
-              >
-                Nombre Completo
-              </label>
-            </div>
-
-            <div className="relative pt-2">
-              <input 
-                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent tracking-widest" 
-                id="dni-reg" 
-                placeholder="DNI" 
-                required 
-                type="text" 
-                inputMode="numeric"
-                value={dni}
-                onChange={handleDniChange}
-              />
-              <label 
-                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
-                htmlFor="dni-reg"
-              >
-                DNI
-              </label>
-            </div>
-
-            <div className="relative pt-2">
-              <input 
-                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent" 
-                id="phone" 
-                placeholder="Teléfono" 
-                required 
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-              <label 
-                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
-                htmlFor="phone"
-              >
-                Teléfono
-              </label>
-            </div>
-
-            <div className="relative pt-2">
-              <input 
-                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent [color-scheme:dark]" 
-                id="birthdate" 
-                placeholder="Fecha de Nacimiento" 
-                required 
-                type="date"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-              />
-              <label 
-                className="absolute left-0 -top-2 text-gray-500 text-xs transition-all duration-300 peer-focus:text-brand-accent" 
-                htmlFor="birthdate"
-              >
-                Fecha de Nacimiento
-              </label>
-            </div>
-
-            <div className="relative pt-2 mb-2">
-              <input 
-                className="peer w-full bg-transparent border-0 border-b border-white/20 px-0 py-2 text-white font-medium focus:ring-0 focus:border-brand-accent transition-colors placeholder-transparent" 
-                id="email" 
-                placeholder="Correo Electrónico" 
-                required 
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label 
-                className="absolute left-0 top-4 text-gray-500 text-sm cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-brand-accent peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500" 
-                htmlFor="email"
-              >
-                Correo Electrónico
-              </label>
-            </div>
+            <FloatingInput id="fullname" label="Nombre Completo" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+            <FloatingInput id="dni-reg" label="DNI" type="text" inputMode="numeric" value={dni} onChange={handleDniChange} inputClassName="tracking-widest" required />
+            <FloatingInput id="phone" label="Teléfono" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+            <FloatingInput id="birthdate" label="Fecha de Nacimiento" type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required />
+            <div className="mb-2"><FloatingInput id="email" label="Correo Electrónico" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
 
             <Feedback message={message} error={error} />
 
             <button 
-              className="w-full btn-glow font-bold text-sm py-4 rounded-xl flex items-center justify-center gap-2 mt-2 disabled:opacity-50 transition-transform active:scale-95 group" 
+              className="w-full bg-inverse-on-surface text-primary-container font-label-md text-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] disabled:opacity-50 group" 
               type="submit"
               disabled={loading}
             >
               <span>{loading ? "Enviando..." : "Registrarse y Enviar Enlace"}</span>
               {!loading && <Sparkles className="h-4 w-4 transition-transform group-hover:scale-110" />}
             </button>
-            <p className="text-xs text-gray-500 text-center mt-2">
+            <p className="font-label-sm text-label-sm text-surface-variant/50 text-center mt-2">
               Al registrarte, aceptas nuestros términos de servicio.
             </p>
           </form>

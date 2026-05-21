@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import {
   Coffee,
@@ -12,7 +12,8 @@ import {
   Gift,
   X,
   Edit2,
-  ArrowLeft
+  ArrowLeft,
+  QrCode
 } from "lucide-react";
 import type { Database, LoyaltyCustomer, LoyaltyEvent } from "@/types/database";
 
@@ -40,6 +41,43 @@ function isBirthdayToday(birthDateStr: string | null | undefined): boolean {
   }
 }
 
+function formatDni(value: string): string {
+  const clean = value.replace(/\D/g, "");
+  if (clean.length <= 8) {
+    if (clean.length > 5) {
+      return clean.replace(/^(\d{1,2})(\d{3})(\d{0,3})$/, (match, p1, p2, p3) => {
+        return p3 ? `${p1}.${p2}.${p3}` : `${p1}.${p2}`;
+      });
+    } else if (clean.length > 2) {
+      return clean.replace(/^(\d{1,2})(\d{0,3})$/, "$1.$2");
+    }
+  }
+  return clean;
+}
+
+function FloatingInput({ id, label, type = "text", value, onChange, placeholder, required = false, className = "", inputClassName = "", maxLength }: { id: string; label: string; type?: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string; required?: boolean; className?: string; inputClassName?: string; maxLength?: number }) {
+  return (
+    <div className={`relative pt-2 ${className}`}>
+      <input
+        id={id}
+        type={type}
+        required={required}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        className={`peer w-full bg-transparent border-0 border-b border-surface-variant/30 px-0 py-2 text-inverse-on-surface font-body-md text-body-md focus:ring-0 focus:border-secondary-fixed-dim transition-colors placeholder-transparent ${inputClassName}`}
+      />
+      <label
+        htmlFor={id}
+        className={`absolute left-0 top-4 text-surface-variant font-body-md text-body-md cursor-text transition-all duration-300 peer-focus:-top-2 peer-focus:text-label-sm peer-focus:font-label-sm peer-focus:text-secondary-fixed-dim peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:text-label-sm peer-[:not(:placeholder-shown)]:font-label-sm peer-[:not(:placeholder-shown)]:text-surface-variant ${type === 'date' ? '-top-2 text-label-sm font-label-sm peer-focus:text-secondary-fixed-dim' : ''}`}
+      >
+        {label}
+      </label>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [isLogged, setIsLogged] = useState(false);
   const [pin, setPin] = useState("");
@@ -59,6 +97,21 @@ export default function AdminPage() {
   // Edit states
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ fullName: "", phone: "", dni: "", birthDate: "" });
+
+  // Creation states
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createData, setCreateData] = useState({
+    fullName: "",
+    dni: "",
+    email: "",
+    phone: "",
+    birthDate: ""
+  });
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  // QR scanner states
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const scannerRef = useRef<import("html5-qrcode").Html5Qrcode | null>(null);
 
   const birthdayToday = selectedCustomer ? isBirthdayToday(selectedCustomer.birth_date) : false;
 
@@ -118,7 +171,7 @@ export default function AdminPage() {
 
   const selectCustomer = async (customer: LoyaltyCustomer) => {
     setSelectedCustomer(customer);
-    setDni(customer.dni || "");
+    setDni(formatDni(customer.dni || ""));
     setCode("");
     setError(null);
     setSuccess(null);
@@ -139,7 +192,7 @@ export default function AdminPage() {
     setEditData({
       fullName: selectedCustomer?.full_name || "",
       phone: selectedCustomer?.phone || "",
-      dni: selectedCustomer?.dni || "",
+      dni: formatDni(selectedCustomer?.dni || ""),
       birthDate: selectedCustomer?.birth_date || ""
     });
     setIsEditing(true);
@@ -157,7 +210,7 @@ export default function AdminPage() {
           userId: selectedCustomer.id,
           fullName: editData.fullName,
           phone: editData.phone,
-          dni: editData.dni,
+          dni: editData.dni.replace(/\D/g, ""),
           birthDate: editData.birthDate
         })
       });
@@ -169,7 +222,7 @@ export default function AdminPage() {
         ...selectedCustomer,
         full_name: editData.fullName,
         phone: editData.phone,
-        dni: editData.dni,
+        dni: editData.dni.replace(/\D/g, ""),
         birth_date: editData.birthDate
       };
       setSelectedCustomer(updatedCustomer);
@@ -189,7 +242,7 @@ export default function AdminPage() {
     try {
       const response = await fetch("/api/admin/add-stamp", {
         method: "POST",
-        body: JSON.stringify({ dni, code }),
+        body: JSON.stringify({ dni: dni.replace(/\D/g, ""), code }),
       });
       const json = await response.json();
       
@@ -272,40 +325,157 @@ export default function AdminPage() {
     void loadCustomers(val);
   };
 
+  // Create customer submission
+  const handleCreateCustomer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setCreateError(null);
+
+    try {
+      const response = await fetch("/api/admin/create-customer", {
+        method: "POST",
+        body: JSON.stringify({
+          fullName: createData.fullName,
+          dni: createData.dni.replace(/\D/g, ""),
+          email: createData.email,
+          phone: createData.phone,
+          birthDate: createData.birthDate
+        })
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        setCreateError(json.error || "No se pudo crear el cliente.");
+        return;
+      }
+
+      // Success
+      void loadCustomers(searchQuery);
+      if (json.customer) {
+        selectCustomer(json.customer);
+      }
+      setCreateData({ fullName: "", dni: "", email: "", phone: "", birthDate: "" });
+      setIsCreateModalOpen(false);
+    } catch {
+      setCreateError("Error de conexión al registrar cliente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // QR Scanner logics
+  const startScanner = async () => {
+    try {
+      const { Html5Qrcode } = await import("html5-qrcode");
+      // Wait a frame to guarantee the element exists in DOM
+      setTimeout(async () => {
+        try {
+          const html5QrCode = new Html5Qrcode("qr-reader");
+          scannerRef.current = html5QrCode;
+
+          await html5QrCode.start(
+            { facingMode: "environment" },
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 250 },
+            },
+            (decodedText) => {
+              handleQrScanned(decodedText);
+            },
+            () => {
+              // silent scanning failures
+            }
+          );
+        } catch (scannerErr) {
+          console.error("Scanner start error inside microtask:", scannerErr);
+        }
+      }, 100);
+    } catch (err) {
+      console.error("Error dynamically importing html5-qrcode:", err);
+      setError("No se pudo iniciar la cámara.");
+    }
+  };
+
+  const stopScanner = async () => {
+    if (scannerRef.current) {
+      try {
+        await scannerRef.current.stop();
+      } catch (err) {
+        console.error("Error stopping scanner:", err);
+      }
+      scannerRef.current = null;
+    }
+  };
+
+  const handleQrScanned = (text: string) => {
+    try {
+      const data = JSON.parse(text);
+      if (data.dni && data.code) {
+        setDni(formatDni(data.dni));
+        setCode(data.code);
+        setIsQrModalOpen(false);
+
+        // Find customer if exists
+        const rawDni = data.dni.replace(/\D/g, "");
+        const found = customers.find(c => c.dni === rawDni);
+        if (found) {
+          selectCustomer(found);
+        }
+      }
+    } catch {
+      console.error("Formato de QR no reconocido:", text);
+    }
+  };
+
+  useEffect(() => {
+    if (isQrModalOpen) {
+      void startScanner();
+    } else {
+      void stopScanner();
+    }
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.stop().catch(console.error);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isQrModalOpen]);
+
   if (!isLogged) {
     return (
       <main className="grid min-h-screen place-items-center px-4 relative flex-1">
         <form
           onSubmit={login}
-          className="glass-panel w-full max-w-sm rounded-2xl p-8 z-10"
+          className="bg-tertiary-container/40 backdrop-blur-xl border border-surface-variant/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] w-full max-w-sm rounded-2xl p-8 z-10 animate-scale-in"
         >
           <div className="flex justify-center mb-8">
             <BrandMark />
           </div>
-          <h1 className="text-2xl font-bold text-center text-white">
+          <h1 className="text-2xl font-bold text-center text-inverse-on-surface">
             Acceso Barista
           </h1>
-          <p className="mt-2 text-sm text-center text-gray-400 mb-8">
+          <p className="mt-2 text-sm text-center text-surface-variant/80 mb-8">
             Ingresa el PIN de seguridad de la sucursal.
           </p>
-          <div className="mb-6">
-            <input 
-              className="premium-input w-full text-center text-2xl tracking-[0.5em] px-4 py-3 rounded-xl" 
-              id="pin" 
-              placeholder="PIN" 
-              required 
+          <div className="mb-8">
+            <FloatingInput
+              id="pin"
+              label="PIN de seguridad"
               type="password"
+              placeholder="PIN"
+              required
               value={pin}
               onChange={(e) => setPin(e.target.value)}
-              autoFocus
+              inputClassName="text-center text-2xl tracking-[0.5em]"
             />
           </div>
           {error && (
-            <p className="mb-6 rounded-xl bg-red-900/30 border border-red-500/30 px-4 py-3 text-sm font-medium text-red-400 text-center">
+            <p className="mb-6 rounded-xl bg-error-container/30 border border-error/30 px-4 py-3 text-sm font-medium text-error text-center">
               {error}
             </p>
           )}
-          <button className="w-full h-12 text-sm font-bold btn-glow rounded-xl" disabled={loading} type="submit">
+          <button className="w-full bg-inverse-on-surface text-primary-container font-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50" disabled={loading} type="submit">
             Entrar
           </button>
         </form>
@@ -317,7 +487,7 @@ export default function AdminPage() {
   const isRewardReady = selectedStamps >= 5;
 
   return (
-    <div className="flex-1 flex flex-col h-screen">
+    <div className="flex-1 flex flex-col h-screen animate-fade-in">
       {/* Header */}
       <header className="glass-panel sticky top-0 z-50 px-4 md:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -327,7 +497,7 @@ export default function AdminPage() {
           <div className="hidden sm:block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-semibold text-brand-accent tracking-wider">
             PANEL BARISTA ACTIVO
           </div>
-          <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+          <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2 font-medium">
             <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Salir</span>
           </button>
         </div>
@@ -337,19 +507,32 @@ export default function AdminPage() {
       <main className="flex-1 flex overflow-hidden p-4 md:p-6 gap-6 max-w-[1600px] mx-auto w-full flex-col md:flex-row">
         
         {/* Left Sidebar (Client List) */}
-        <aside className={`w-full md:w-[350px] flex-col gap-4 ${selectedCustomer ? 'hidden md:flex' : 'flex'}`}>
-          <div className="mb-2">
-            <h2 className="text-xl font-bold text-white mb-1">Clientes Registrados</h2>
-            <p className="text-sm text-gray-400">Busca y selecciona un cliente de la lista</p>
+        <aside className={`w-full md:w-[350px] flex flex-col gap-4 ${selectedCustomer ? 'hidden md:flex' : 'flex'}`}>
+          <div className="flex justify-between items-center mb-1">
+            <div>
+              <h2 className="text-xl font-bold text-white">Clientes</h2>
+              <p className="text-xs text-gray-400">Busca o selecciona un cliente</p>
+            </div>
+            <button
+              onClick={() => {
+                setCreateError(null);
+                setIsCreateModalOpen(true);
+              }}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-accent text-black font-bold text-xs hover:bg-brand-accent/90 transition-all active:scale-95 shadow-md shadow-brand-accent/10"
+            >
+              <Plus className="h-3.5 w-3.5 stroke-[3px]" /> Nuevo
+            </button>
           </div>
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <input 
-              className="premium-input w-full pl-10 pr-4 py-3 rounded-xl text-sm transition-all" 
-              placeholder="Buscar por Nombre, DNI, Email..." 
-              type="text" 
+          <div className="relative mb-4">
+            <Search className="absolute left-0 top-4 text-surface-variant/60 h-5 w-5 z-10" />
+            <FloatingInput
+              id="search"
+              label="Buscar cliente..."
+              type="text"
+              placeholder="Buscar cliente..."
               value={searchQuery}
               onChange={handleSearchChange}
+              inputClassName="pl-8"
             />
           </div>
           <div className="flex-1 overflow-y-auto pr-2 mt-2 space-y-3">
@@ -364,7 +547,7 @@ export default function AdminPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className={`font-bold text-base ${isSelected ? 'text-white' : 'text-gray-200'}`}>{c.full_name}</h3>
-                        <p className={`text-xs mt-1 ${isSelected ? 'text-gray-400' : 'text-gray-500'}`}>DNI: {c.dni || "Sin DNI"}</p>
+                        <p className={`text-xs mt-1 ${isSelected ? 'text-gray-400' : 'text-gray-500'}`}>DNI: {formatDni(c.dni || "")}</p>
                       </div>
                       <div className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 ${isSelected ? 'bg-white/10 text-brand-accent' : stampsCount >= 5 ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/30' : 'bg-white/5 text-gray-400'}`}>
                         <Coffee className={`h-3 w-3 ${isSelected || stampsCount >= 5 ? 'text-brand-accent' : ''}`} /> {stampsCount}/5
@@ -380,7 +563,7 @@ export default function AdminPage() {
         </aside>
 
         {/* Main Workspace */}
-        <section className={`flex-1 flex-col gap-6 overflow-y-auto pr-1 md:flex ${selectedCustomer ? 'flex' : 'flex'}`}>
+        <section className={`flex-1 flex flex-col gap-6 overflow-y-auto pr-1 ${selectedCustomer ? 'flex' : 'hidden md:flex'}`}>
           
           {/* Toast Notification */}
           {success && (
@@ -403,7 +586,7 @@ export default function AdminPage() {
           {selectedCustomer ? (
             <>
               {/* Mobile Back Button */}
-              <div className="md:hidden">
+              <div className="md:hidden animate-fade-in">
                 <button onClick={() => { setSelectedCustomer(null); setDni(""); setCode(""); setIsEditing(false); }} className="flex items-center gap-2 text-sm text-brand-accent font-semibold bg-brand-accent/10 border border-brand-accent/20 px-4 py-2.5 rounded-xl w-full justify-center mb-4 active:scale-95 transition-transform">
                   <ArrowLeft className="h-4 w-4" /> Volver a la lista
                 </button>
@@ -421,23 +604,23 @@ export default function AdminPage() {
                   </div>
                   
                   {isEditing ? (
-                    <form onSubmit={saveEdit} className="mt-2 space-y-4 max-w-md">
-                        <div className="grid grid-cols-2 gap-4">
-                            <input className="premium-input w-full px-4 py-2 rounded-xl text-sm" placeholder="Nombre" value={editData.fullName} onChange={e=>setEditData({...editData, fullName: e.target.value})} required />
-                            <input className="premium-input w-full px-4 py-2 rounded-xl text-sm" placeholder="DNI" value={editData.dni} onChange={e=>setEditData({...editData, dni: e.target.value})} required />
-                            <input className="premium-input w-full px-4 py-2 rounded-xl text-sm" placeholder="Teléfono" value={editData.phone} onChange={e=>setEditData({...editData, phone: e.target.value})} required />
-                            <input className="premium-input w-full px-4 py-2 rounded-xl text-sm [color-scheme:dark]" type="date" value={editData.birthDate} onChange={e=>setEditData({...editData, birthDate: e.target.value})} required />
+                    <form onSubmit={saveEdit} className="mt-4 space-y-6 max-w-md">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <FloatingInput id="editFullName" label="Nombre Completo" value={editData.fullName} onChange={(e)=>setEditData({...editData, fullName: e.target.value})} required />
+                            <FloatingInput id="editDni" label="DNI" value={editData.dni} onChange={(e)=>setEditData({...editData, dni: formatDni(e.target.value)})} required />
+                            <FloatingInput id="editPhone" label="Teléfono" value={editData.phone} onChange={(e)=>setEditData({...editData, phone: e.target.value})} required />
+                            <FloatingInput id="editBirthDate" label="Fecha de Nacimiento" type="date" value={editData.birthDate} onChange={(e)=>setEditData({...editData, birthDate: e.target.value})} required />
                         </div>
-                        <div className="flex gap-2">
-                            <button type="submit" disabled={loading} className="px-4 py-2 btn-glow rounded-xl text-sm font-bold disabled:opacity-50">Guardar</button>
-                            <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 text-gray-400 hover:text-white text-sm">Cancelar</button>
+                        <div className="flex gap-4 pt-2">
+                            <button type="submit" disabled={loading} className="flex-1 bg-inverse-on-surface text-primary-container font-label-md py-3 rounded-full hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 disabled:opacity-50">Guardar Cambios</button>
+                            <button type="button" onClick={() => setIsEditing(false)} className="flex-1 font-label-md py-3 rounded-full border border-surface-variant/30 text-surface-variant hover:text-white hover:bg-white/5 transition-all duration-300">Cancelar</button>
                         </div>
                     </form>
                   ) : (
                     <>
                       <h2 className="text-3xl font-bold text-white mb-4">{selectedCustomer.full_name}</h2>
                       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-400">
-                        <span className="flex items-center gap-2"><span className="text-gray-500">DNI:</span> {selectedCustomer.dni || "—"}</span>
+                        <span className="flex items-center gap-2"><span className="text-gray-500">DNI:</span> {formatDni(selectedCustomer.dni || "")}</span>
                         <span className="flex items-center gap-2"><span className="text-gray-500">Tel:</span> {selectedCustomer.phone || "—"}</span>
                         <span className="flex items-center gap-2"><span className="text-gray-500">Email:</span> {selectedCustomer.email || "—"}</span>
                         <span className="flex items-center gap-2"><span className="text-gray-500">Cumpleaños:</span> {selectedCustomer.birth_date ? new Date(selectedCustomer.birth_date + "T12:00:00").toLocaleDateString("es-AR") : "No registrado"}</span>
@@ -491,10 +674,19 @@ export default function AdminPage() {
                 {/* Add Stamp Card */}
                 <form onSubmit={addStamp} className="glass-panel rounded-2xl p-6 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-2">
-                      <Plus className="h-4 w-4 text-gray-400" /> Sumar Sello
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-6">Ingresa el código temporal de 4 dígitos generado en la app del cliente.</p>
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                        <Plus className="h-4 w-4 text-gray-400" /> Sumar Sello
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => setIsQrModalOpen(true)}
+                        className="flex items-center gap-1.5 text-xs text-brand-accent font-bold px-3 py-1.5 rounded-xl bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent/20 transition-all active:scale-95"
+                      >
+                        <QrCode className="h-3.5 w-3.5" /> Escanear QR
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-6">Ingresa el código temporal de 4 dígitos generado en la app del cliente o escanea su QR.</p>
                     <div className="mb-6">
                       <label className="block text-xs font-medium text-gray-500 mb-2">Código Rotativo</label>
                       <div className="flex items-center premium-input rounded-xl px-4 py-3 h-12">
@@ -559,7 +751,7 @@ export default function AdminPage() {
                 ) : history.length > 0 ? (
                   <div className="glass-panel rounded-2xl p-4 border border-white/10 space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar">
                     {history.map(h => (
-                      <div key={h.id} className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5">
+                      <div key={h.id} className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5 animate-fade-in">
                         <div>
                           <p className="font-semibold text-white text-sm">{h.type === 'stamp_added' ? 'Sello Agregado' : 'Canje de Recompensa'}</p>
                           <p className="text-xs text-gray-500 mt-1">
@@ -583,39 +775,45 @@ export default function AdminPage() {
             </>
           ) : (
             /* Blank state: Quick operations form */
-            <div className="glass-panel rounded-2xl p-8">
-               <h2 className="text-2xl font-bold text-white mb-2">Carga Rápida de Sellos</h2>
+            <div className="glass-panel rounded-2xl p-8 animate-scale-in">
+               <div className="flex justify-between items-center mb-4">
+                 <h2 className="text-2xl font-bold text-white">Carga Rápida de Sellos</h2>
+                 <button
+                   type="button"
+                   onClick={() => setIsQrModalOpen(true)}
+                   className="flex items-center gap-1.5 text-xs text-brand-accent font-bold px-3 py-2 rounded-xl bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent/20 transition-all active:scale-95"
+                 >
+                   <QrCode className="h-4 w-4" /> Escanear QR con Cámara
+                 </button>
+               </div>
                <p className="text-sm text-gray-400 mb-8 max-w-lg">
                   Si tienes el DNI y código a mano, ingrésalos aquí directamente. O busca y selecciona un cliente de la lista.
                </p>
-               <form onSubmit={addStamp} className="space-y-6 max-w-lg">
-                  <div className="grid gap-6 sm:grid-cols-2">
-                     <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-2">DNI del Cliente</label>
-                        <input 
-                           className="premium-input w-full px-4 py-3 rounded-xl text-sm" 
-                           placeholder="Ej. 12345678" 
-                           required 
-                           type="tel"
-                           value={dni}
-                           onChange={(e) => setDni(e.target.value)}
-                        />
-                     </div>
-                     <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-2">Código de 4 dígitos</label>
-                        <input 
-                           className="premium-input w-full px-4 py-3 rounded-xl text-center tracking-[0.5em] font-mono text-xl" 
-                           placeholder="----" 
-                           required 
-                           maxLength={4}
-                           type="tel"
-                           value={code}
-                           onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                        />
-                     </div>
+               <form onSubmit={addStamp} className="space-y-8 max-w-lg">
+                  <div className="grid gap-8 sm:grid-cols-2">
+                     <FloatingInput
+                        id="quickDni"
+                        label="DNI del Cliente"
+                        type="tel"
+                        placeholder="DNI"
+                        required
+                        value={dni}
+                        onChange={(e) => setDni(formatDni(e.target.value))}
+                     />
+                     <FloatingInput
+                        id="quickCode"
+                        label="Código de 4 dígitos"
+                        type="tel"
+                        placeholder="----"
+                        required
+                        maxLength={4}
+                        value={code}
+                        onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                        inputClassName="text-center tracking-[0.5em] font-mono text-xl"
+                     />
                   </div>
-                  {error && <p className="text-red-400 text-xs bg-red-900/20 p-3 rounded-xl border border-red-500/20 text-center">{error}</p>}
-                  <button type="submit" disabled={loading} className="w-full btn-glow py-3.5 rounded-xl font-bold text-sm">
+                  {error && <p className="text-error text-xs bg-error-container/20 p-3 rounded-xl border border-error/20 text-center">{error}</p>}
+                  <button type="submit" disabled={loading} className="w-full bg-inverse-on-surface text-primary-container font-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] disabled:opacity-50">
                      Confirmar Sello
                   </button>
                </form>
@@ -623,6 +821,106 @@ export default function AdminPage() {
           )}
         </section>
       </main>
+
+      {/* Registrar Cliente Modal */}
+      {isCreateModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <form
+            onSubmit={handleCreateCustomer}
+            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#121212] p-6 text-left shadow-2xl animate-scale-in space-y-4"
+          >
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setIsCreateModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Title */}
+            <div>
+              <h3 className="text-lg font-bold text-white">Registrar Nuevo Cliente</h3>
+              <p className="text-xs text-gray-400">Crea una cuenta para un cliente en caja.</p>
+            </div>
+
+            {/* Fields */}
+            <div className="flex flex-col gap-6">
+              <FloatingInput id="createFullName" label="Nombre Completo *" value={createData.fullName} onChange={(e) => setCreateData({ ...createData, fullName: e.target.value })} required />
+              <FloatingInput id="createDni" label="DNI del Cliente *" type="tel" value={createData.dni} onChange={(e) => setCreateData({ ...createData, dni: formatDni(e.target.value) })} required />
+              <FloatingInput id="createEmail" label="Correo Electrónico (Opcional)" type="email" value={createData.email} onChange={(e) => setCreateData({ ...createData, email: e.target.value })} />
+              <FloatingInput id="createPhone" label="Teléfono (Opcional)" type="tel" value={createData.phone} onChange={(e) => setCreateData({ ...createData, phone: e.target.value })} />
+              <FloatingInput id="createBirthDate" label="Fecha de Nacimiento (Opcional)" type="date" value={createData.birthDate} onChange={(e) => setCreateData({ ...createData, birthDate: e.target.value })} />
+            </div>
+
+            {createError && (
+              <p className="text-xs text-error bg-error-container/20 p-2.5 border border-error/20 rounded-xl text-center">
+                {createError}
+              </p>
+            )}
+
+            <div className="flex gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => setIsCreateModalOpen(false)}
+                className="flex-1 font-label-md py-3 rounded-full border border-surface-variant/30 text-surface-variant hover:text-white hover:bg-white/5 transition-all duration-300"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 bg-inverse-on-surface text-primary-container font-label-md py-3 rounded-full hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] disabled:opacity-50"
+              >
+                {loading ? "Creando..." : "Crear Cliente"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* QR Scanner Modal */}
+      {isQrModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#121212] p-6 text-center shadow-2xl animate-scale-in">
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setIsQrModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-10"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Title */}
+            <div className="mb-4">
+              <h3 className="text-lg font-bold text-white">Escanear Código QR</h3>
+              <p className="text-xs text-gray-400">Enfoca el código QR de la app del cliente con la cámara.</p>
+            </div>
+
+            {/* Camera Viewport */}
+            <div className="relative w-full aspect-square bg-black rounded-2xl overflow-hidden border border-white/5 shadow-inner">
+              <div id="qr-reader" className="w-full h-full object-cover [&_video]:object-cover" />
+              {/* Overlay lines/focus indicator */}
+              <div className="absolute inset-8 border-2 border-brand-accent/30 rounded-2xl pointer-events-none animate-pulse flex items-center justify-center">
+                <div className="w-full h-[1px] bg-brand-accent/50" />
+              </div>
+            </div>
+
+            <p className="mt-4 text-xs text-gray-500">
+              Asegúrate de conceder permisos de acceso a la cámara.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setIsQrModalOpen(false)}
+              className="mt-6 w-full h-11 text-xs font-bold border border-white/10 hover:bg-white/5 rounded-xl transition-colors text-white"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
