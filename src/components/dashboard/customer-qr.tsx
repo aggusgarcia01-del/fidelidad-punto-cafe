@@ -17,8 +17,8 @@ export function CustomerQR({ dni }: { dni: string }) {
       
       if (data.token) {
         setExpiresIn(300);
-        // Generar un shortcode usando los ultimos 4 caracteres del JWT para lectura rápida
-        setShortCode(data.token.slice(-4).toUpperCase());
+        // Usar el código de 4 dígitos generado por el backend
+        setShortCode(data.code || data.token.slice(-4).toUpperCase());
         
         // Generar la imagen del QR
         const url = await QRCode.toDataURL(data.token, {

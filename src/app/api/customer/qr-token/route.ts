@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCustomerSessionUserId } from "@/lib/server/customer-session";
 import { assertSupabaseAdminEnv, supabaseAdmin } from "@/lib/supabase/admin";
 import { generateQRToken } from "@/lib/qr-token";
+import { generateStampCode } from "@/lib/server/stamp-code";
 
 export async function GET() {
   assertSupabaseAdminEnv();
@@ -24,7 +25,8 @@ export async function GET() {
 
   try {
     const token = await generateQRToken(userId, user.dni || "");
-    return NextResponse.json({ token });
+    const code = generateStampCode(userId);
+    return NextResponse.json({ token, code });
   } catch (err) {
     return NextResponse.json({ error: "Error generando token" }, { status: 500 });
   }

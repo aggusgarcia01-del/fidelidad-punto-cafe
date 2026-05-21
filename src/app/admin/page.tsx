@@ -466,15 +466,15 @@ export default function AdminPage() {
   return (
     <div className="flex-1 flex flex-col h-screen animate-fade-in">
       {/* Header */}
-      <header className="glass-panel sticky top-0 z-50 px-4 md:px-6 py-4 flex items-center justify-between">
+      <header className="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <BrandMark />
         </div>
-        <div className="flex items-center gap-4 md:gap-6">
-          <div className="hidden sm:block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-semibold text-brand-accent tracking-wider">
+        <div className="flex items-center gap-6">
+          <div className="hidden sm:block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-brand-accent tracking-wider">
             PANEL BARISTA ACTIVO
           </div>
-          <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2 font-medium">
+          <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
             <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Salir</span>
           </button>
         </div>
@@ -485,31 +485,30 @@ export default function AdminPage() {
         
         {/* Left Sidebar (Client List) */}
         <aside className={`w-full md:w-[350px] flex flex-col gap-4 ${selectedCustomer ? 'hidden md:flex' : 'flex'} order-2 md:order-1`}>
-          <div className="flex justify-between items-center mb-1">
+          <div className="flex justify-between items-start mb-2">
             <div>
-              <h2 className="text-xl font-bold text-white">Clientes</h2>
-              <p className="text-xs text-gray-400">Busca o selecciona un cliente</p>
+              <h2 className="text-xl font-bold text-white mb-1">Clientes Registrados</h2>
+              <p className="text-sm text-gray-400">Busca y selecciona un cliente</p>
             </div>
             <button
               onClick={() => {
                 setCreateError(null);
                 setIsCreateModalOpen(true);
               }}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-accent text-black font-bold text-xs hover:bg-brand-accent/90 transition-all active:scale-95 shadow-md shadow-brand-accent/10"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-accent text-black font-bold text-xs hover:bg-brand-accent/90 transition-all active:scale-95 shadow-md shadow-brand-accent/10 mt-1"
             >
               <Plus className="h-3.5 w-3.5 stroke-[3px]" /> Nuevo
             </button>
           </div>
-          <div className="relative mb-4">
-            <Search className="absolute left-0 top-4 text-surface-variant/60 h-5 w-5 z-10" />
-            <FloatingInput
+          <div className="relative mb-2">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <input
               id="search"
-              label="Buscar cliente..."
               type="text"
-              placeholder="Buscar cliente..."
+              placeholder="Buscar por Nombre, DNI, Email..."
               value={searchQuery}
               onChange={handleSearchChange}
-              inputClassName="pl-8"
+              className="premium-input w-full pl-10 pr-4 py-3 rounded-xl text-sm transition-all"
             />
           </div>
           <div className="flex-1 overflow-y-auto pr-2 mt-2 space-y-3">
@@ -524,7 +523,7 @@ export default function AdminPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className={`font-bold text-base ${isSelected ? 'text-white' : 'text-gray-200'}`}>{c.full_name}</h3>
-                        <p className={`text-xs mt-1 ${isSelected ? 'text-gray-400' : 'text-gray-500'}`}>DNI: {formatDni(c.dni || "")}</p>
+                        <p className={`text-xs mt-1 ${isSelected ? 'text-gray-400' : 'text-gray-500'}`}>DNI: {formatDni(c.dni || "Sin DNI")}</p>
                       </div>
                       <div className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 ${isSelected ? 'bg-white/10 text-brand-accent' : stampsCount >= 5 ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/30' : 'bg-white/5 text-gray-400'}`}>
                         <Coffee className={`h-3 w-3 ${isSelected || stampsCount >= 5 ? 'text-brand-accent' : ''}`} /> {stampsCount}/5
@@ -570,7 +569,7 @@ export default function AdminPage() {
               </div>
 
               {/* Top Section: Client Details & Stamp Progress */}
-              <div className="glass-panel rounded-2xl p-6 sm:p-8 relative">
+              <div className="glass-panel rounded-2xl p-8 relative">
                 <button onClick={() => { setSelectedCustomer(null); setDni(""); setCode(""); setIsEditing(false); }} className="hidden md:block absolute top-6 right-6 text-gray-500 hover:text-white transition-colors">
                   <X className="h-5 w-5" />
                 </button>
@@ -589,7 +588,7 @@ export default function AdminPage() {
                             <FloatingInput id="editBirthDate" label="Fecha de Nacimiento" type="date" value={editData.birthDate} onChange={(e)=>setEditData({...editData, birthDate: e.target.value})} required />
                         </div>
                         <div className="flex gap-4 pt-2">
-                            <button type="submit" disabled={loading} className="flex-1 bg-inverse-on-surface text-primary-container font-label-md py-3 rounded-full hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 disabled:opacity-50">Guardar Cambios</button>
+                            <button type="submit" disabled={loading} className="flex-1 bg-brand-accent text-black font-label-md py-3 rounded-full hover:bg-brand-accent/90 transition-all duration-300 disabled:opacity-50">Guardar Cambios</button>
                             <button type="button" onClick={() => setIsEditing(false)} className="flex-1 font-label-md py-3 rounded-full border border-surface-variant/30 text-surface-variant hover:text-white hover:bg-white/5 transition-all duration-300">Cancelar</button>
                         </div>
                     </form>
@@ -597,7 +596,7 @@ export default function AdminPage() {
                     <>
                       <h2 className="text-3xl font-bold text-white mb-4">{selectedCustomer.full_name}</h2>
                       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-400">
-                        <span className="flex items-center gap-2"><span className="text-gray-500">DNI:</span> {formatDni(selectedCustomer.dni || "")}</span>
+                        <span className="flex items-center gap-2"><span className="text-gray-500">DNI:</span> {formatDni(selectedCustomer.dni || "—")}</span>
                         <span className="flex items-center gap-2"><span className="text-gray-500">Tel:</span> {selectedCustomer.phone || "—"}</span>
                         <span className="flex items-center gap-2"><span className="text-gray-500">Email:</span> {selectedCustomer.email || "—"}</span>
                         <span className="flex items-center gap-2"><span className="text-gray-500">Cumpleaños:</span> {selectedCustomer.birth_date ? new Date(selectedCustomer.birth_date + "T12:00:00").toLocaleDateString("es-AR") : "No registrado"}</span>
@@ -624,20 +623,20 @@ export default function AdminPage() {
                     </div>
                   </div>
                   
-                  {/* Stamps Row */}
-                  <div className="flex items-center justify-center py-4">
+                  {/* Stamps Row mimicking SCREEN_26 */}
+                  <div className="flex items-center justify-center gap-4 sm:gap-8 py-4">
                     {[0, 1, 2, 3, 4].map(idx => {
                         const active = idx < selectedStamps;
                         const isGift = idx === 4;
                         return (
                             <div key={idx} className="flex items-center">
-                                <div className="flex flex-col items-center gap-2">
-                                  <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''}`}>
-                                      {isGift ? <Gift className="h-5 w-5" /> : <Coffee className="h-5 w-5" />}
+                                <div className="flex flex-col items-center gap-3">
+                                  <div className={`stamp-circle ${active ? 'active' : ''} ${isGift && !active ? 'gift' : ''}`}>
+                                      {isGift ? <Gift className="h-6 w-6" /> : <Coffee className="h-6 w-6" />}
                                   </div>
-                                  <span className="text-[10px] text-gray-500 font-medium">TAZA {idx + 1}</span>
+                                  <span className={`text-[10px] font-bold tracking-widest ${active ? 'text-brand-accent' : 'text-gray-600'}`}>SELLO {idx + 1}</span>
                                 </div>
-                                {idx < 4 && <div className="h-[1px] w-4 sm:w-8 md:w-12 bg-white/10 mb-6 mx-2 sm:mx-4"></div>}
+                                {idx < 4 && <div className="h-[1px] w-8 sm:w-12 bg-white/10 hidden sm:block mt-[-20px] ml-4 sm:ml-8"></div>}
                             </div>
                         );
                     })}
@@ -646,24 +645,15 @@ export default function AdminPage() {
               </div>
 
               {/* Middle Section: Actions (Add Stamp & Redeem) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {/* Add Stamp Card */}
                 <form onSubmit={addStamp} className="glass-panel rounded-2xl p-6 flex flex-col justify-between">
                   <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                        <Plus className="h-4 w-4 text-gray-400" /> Sumar Sello
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={() => setIsQrModalOpen(true)}
-                        className="flex items-center gap-1.5 text-xs text-brand-accent font-bold px-3 py-1.5 rounded-xl bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent/20 transition-all active:scale-95"
-                      >
-                        <QrCode className="h-3.5 w-3.5" /> Escanear QR
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-400 mb-6">Ingresa el código temporal de 4 dígitos generado en la app del cliente o escanea su QR.</p>
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-2">
+                      <Plus className="h-4 w-4 text-gray-400" /> Sumar sello
+                    </h3>
+                    <p className="text-sm text-gray-400 mb-6">Ingresa el código temporal de 4 dígitos generado en la app del cliente.</p>
                     <div className="mb-6">
                       <label className="block text-xs font-medium text-gray-500 mb-2">Código Rotativo</label>
                       <div className="flex items-center premium-input rounded-xl px-4 py-3 h-12">
@@ -685,11 +675,11 @@ export default function AdminPage() {
                 </form>
 
                 {/* Redeem Coffee Card */}
-                <div className={`glass-panel rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden ${!isRewardReady ? 'opacity-60' : ''}`}>
+                <div className={`glass-panel rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden ${!isRewardReady ? 'opacity-50' : ''}`}>
                   {!isRewardReady && <div className="absolute inset-0 bg-black/20 z-10 pointer-events-none"></div>}
                   <div className="relative z-20">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-2">
-                      <Gift className="h-4 w-4 text-gray-400" /> Canjear Café Gratis
+                      <Gift className="h-4 w-4 text-gray-400" /> Canjear café gratis
                     </h3>
                     <p className="text-sm text-gray-400 mb-6">Cuando el cliente alcanza los 5 sellos, puedes entregarle su café gratis y reiniciar la tarjeta.</p>
                     <div className="mb-6">
@@ -752,56 +742,62 @@ export default function AdminPage() {
             </>
           ) : (
             /* Blank state: Quick operations form */
-            <div className="glass-panel rounded-2xl p-8 animate-scale-in">
+            <div className="glass-panel rounded-2xl p-8 animate-scale-in flex flex-col justify-center min-h-[500px]">
                
                {/* BIG PRIMARY QR SCAN BUTTON */}
-               <div className="mb-8 border-b border-white/5 pb-8">
-                 <h2 className="text-2xl font-bold text-white mb-2 text-center">Escanear Código QR</h2>
-                 <p className="text-sm text-gray-400 text-center mb-6">Usa la cámara para acreditar sellos al instante.</p>
+               <div className="mb-12 pb-8">
+                 <h2 className="text-3xl font-bold text-white mb-3 text-center">Escanear QR de Cliente</h2>
+                 <p className="text-sm text-gray-400 text-center mb-8">Pide al cliente que abra su app y muestra el código frente a la cámara.</p>
                  <button
                    type="button"
                    onClick={() => setIsQrModalOpen(true)}
-                   className="w-full h-20 rounded-2xl bg-brand-accent text-black font-black text-xl flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(212,175,55,0.3)] hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(212,175,55,0.4)] transition-all active:scale-95"
+                   className="w-full max-w-md mx-auto h-24 rounded-2xl btn-glow font-black text-xl flex items-center justify-center gap-4 active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.2)]"
                  >
-                   <QrCode className="h-8 w-8 stroke-[2.5px]" />
+                   <QrCode className="h-10 w-10 stroke-[2.5px]" />
                    INICIAR ESCÁNER
                  </button>
                </div>
 
-               <div className="flex justify-between items-center mb-4">
-                 <h3 className="text-lg font-bold text-white">Carga Manual</h3>
+               <div className="flex flex-col items-center">
+                 <div className="w-full max-w-md border-t border-white/5 pt-8">
+                   <h3 className="text-lg font-bold text-white mb-2 text-center">Carga Manual</h3>
+                   <p className="text-xs text-gray-500 mb-6 text-center">
+                      Si la cámara no funciona, ingresa el DNI y código manualmente.
+                   </p>
+                   <form onSubmit={addStamp} className="space-y-6">
+                      <div className="grid gap-6 sm:grid-cols-2">
+                         <div className="relative">
+                           <FloatingInput
+                              id="quickDni"
+                              label="DNI del Cliente"
+                              type="tel"
+                              placeholder="DNI"
+                              required
+                              value={dni}
+                              onChange={(e) => setDni(formatDni(e.target.value))}
+                           />
+                         </div>
+                         <div className="relative">
+                           <FloatingInput
+                              id="quickCode"
+                              label="Cód. 4 dígitos"
+                              type="tel"
+                              placeholder="----"
+                              required
+                              maxLength={4}
+                              value={code}
+                              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                              inputClassName="text-center tracking-[0.5em] font-mono text-xl"
+                           />
+                         </div>
+                      </div>
+                      {error && <p className="text-error text-xs bg-error-container/20 p-3 rounded-xl border border-error/20 text-center">{error}</p>}
+                      <button type="submit" disabled={loading} className="w-full bg-white/5 border border-white/10 text-white font-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition-all duration-300 disabled:opacity-50">
+                         Confirmar Sello Manual
+                      </button>
+                   </form>
+                 </div>
                </div>
-               <p className="text-sm text-gray-400 mb-8 max-w-lg">
-                  Si la cámara no funciona o tienes el DNI a mano, ingresa el código del cliente manualmente.
-               </p>
-               <form onSubmit={addStamp} className="space-y-8 max-w-lg">
-                  <div className="grid gap-8 sm:grid-cols-2">
-                     <FloatingInput
-                        id="quickDni"
-                        label="DNI del Cliente"
-                        type="tel"
-                        placeholder="DNI"
-                        required
-                        value={dni}
-                        onChange={(e) => setDni(formatDni(e.target.value))}
-                     />
-                     <FloatingInput
-                        id="quickCode"
-                        label="Código de 4 dígitos"
-                        type="tel"
-                        placeholder="----"
-                        required
-                        maxLength={4}
-                        value={code}
-                        onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                        inputClassName="text-center tracking-[0.5em] font-mono text-xl"
-                     />
-                  </div>
-                  {error && <p className="text-error text-xs bg-error-container/20 p-3 rounded-xl border border-error/20 text-center">{error}</p>}
-                  <button type="submit" disabled={loading} className="w-full bg-inverse-on-surface text-primary-container font-label-md py-4 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] disabled:opacity-50">
-                     Confirmar Sello
-                  </button>
-               </form>
             </div>
           )}
         </section>
