@@ -12,12 +12,16 @@ export default function HomePage() {
             <img 
               alt="Punto Café Logo" 
               className="w-full h-full object-cover" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9Oc41mV9ZvO4QpzGUUodEFizePE5Wov7XX0StaZsETKx8cF2C7_blz4lZljL3V7bFGihWnVwzVTWnBifHW97NYTp8Lq4AXnd3UX2Zbr9M_ri_qAif6tkVji0MRhePUdXeUfU1Tfc44yGBOlo4IZyth15WgONOk3-NCu72ToY4c4v66aVDqoIUK_Bl4sf1NEmXdTp8ldQ1R10XwHguz1w39XtdqC0OoVxJKpoWiBtZNTk9yQRlO0C5wY9jMfFH-C-L79TcW0madeg" 
+              src="/logo-circle.png" 
             />
           </div>
-
-          {/* Premium Typography Treatment */}
-          <div className="mb-8 select-none"></div>
+          <div className="mb-8">
+            <img 
+              alt="Punto Café" 
+              className="h-10 w-auto object-contain" 
+              src="/punto-cafe-text.png" 
+            />
+          </div>
 
           {/* Headline */}
           <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg text-balance bg-gradient-to-b from-white via-white to-surface-variant/40 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">
@@ -36,7 +40,7 @@ export default function HomePage() {
             {/* Stamp 1 */}
             <div className="flex flex-col items-center">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0s' }} src="/logo-circle.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -45,7 +49,7 @@ export default function HomePage() {
             {/* Stamp 2 */}
             <div className="flex flex-col items-center">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0.5s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0.5s' }} src="/logo-circle.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -54,7 +58,7 @@ export default function HomePage() {
             {/* Stamp 3 */}
             <div className="flex flex-col items-center">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1s' }} src="/logo-circle.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -63,7 +67,7 @@ export default function HomePage() {
             {/* Stamp 4 */}
             <div className="flex flex-col items-center">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1.5s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1.5s' }} src="/logo-circle.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -72,7 +76,7 @@ export default function HomePage() {
             {/* Stamp 5 (Reward) */}
             <div className="flex flex-col items-center relative">
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-secondary-fixed-dim border-dashed flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '2s' }} src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc" />
+                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '2s' }} src="/logo-circle.png" />
               </div>
             </div>
           </div>

@@ -660,7 +660,7 @@ export default function AdminPage() {
                                       <img 
                                         alt="Punto Café Premium Logo" 
                                         className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
-                                        src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc"
+                                        src="/logo-circle.png"
                                       />
                                   </div>
                                   <span className={`text-[10px] font-bold tracking-widest ${active ? 'text-brand-accent' : 'text-gray-600'}`}>SELLO {idx + 1}</span>
