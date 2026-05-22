@@ -20,10 +20,13 @@ export function CustomerQR({ dni }: { dni: string }) {
         // Usar el código de 4 dígitos generado por el backend
         setShortCode(data.code || data.token.slice(-4).toUpperCase());
         
+        // Generar una URL completa para que cámaras nativas reaccionen
+        const scanUrl = `${window.location.origin}/admin?scan=${data.token}`;
+        
         // Generar la imagen del QR
-        const url = await QRCode.toDataURL(data.token, {
-          width: 200,
-          margin: 1,
+        const url = await QRCode.toDataURL(scanUrl, {
+          width: 250,
+          margin: 2,
           color: { dark: "#000000", light: "#FFFFFF" },
         });
         setQrDataUrl(url);
@@ -63,15 +66,17 @@ export function CustomerQR({ dni }: { dni: string }) {
   }
 
   return (
-    <div className="flex flex-col items-center bg-white p-4 rounded-2xl max-w-xs mx-auto shadow-xl">
+    <div className="flex flex-col items-center p-4 rounded-2xl max-w-xs mx-auto shadow-xl">
       {qrDataUrl && (
-        <img 
-          src={qrDataUrl} 
-          alt="Código QR" 
-          width={200} 
-          height={200} 
-          className="rounded-lg mb-4"
-        />
+        <div style={{ background: 'white', padding: '16px', borderRadius: '16px', display: 'inline-block', marginBottom: '16px' }}>
+          <img 
+            src={qrDataUrl} 
+            alt="Código QR" 
+            width={250} 
+            height={250} 
+            className="rounded-lg"
+          />
+        </div>
       )}
       
       <div className="w-full bg-surface-container-low p-3 rounded-xl text-center mb-3">

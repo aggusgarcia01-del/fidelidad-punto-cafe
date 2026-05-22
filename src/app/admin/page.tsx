@@ -121,6 +121,20 @@ export default function AdminPage() {
     });
   }, []);
 
+  useEffect(() => {
+    if (isLogged && typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      const scanToken = url.searchParams.get("scan");
+      if (scanToken) {
+        // Automatically process scan on load
+        handleQrScanned(scanToken);
+        url.searchParams.delete("scan");
+        window.history.replaceState({}, "", url.toString());
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLogged]);
+
   const loadCustomers = useCallback(async (query = "") => {
     try {
       const response = await fetch(`/api/admin/customers?q=${encodeURIComponent(query)}`);
@@ -366,15 +380,26 @@ export default function AdminPage() {
 
   // QR Scanner logics
   const handleQrScanned = async (text: string) => {
+    let scanToken = text;
+    try {
+      if (text.startsWith("http")) {
+        const url = new URL(text);
+        const urlParam = url.searchParams.get("scan");
+        if (urlParam) scanToken = urlParam;
+      }
+    } catch {
+      // Ignorar error de URL
+    }
+
     // Check if it looks like a JWT token (QRToken)
-    if (text.split('.').length === 3) {
+    if (scanToken.split('.').length === 3) {
       setIsQrModalOpen(false);
       setLoading(true);
       setError(null);
       try {
         const response = await fetch("/api/admin/add-stamp", {
           method: "POST",
-          body: JSON.stringify({ qrToken: text }),
+          body: JSON.stringify({ qrToken: scanToken }),
         });
         const json = await response.json();
         
@@ -401,7 +426,7 @@ export default function AdminPage() {
     } else {
       // old format fallback
       try {
-        const data = JSON.parse(text);
+        const data = JSON.parse(scanToken);
         if (data.dni && data.code) {
           setDni(formatDni(data.dni));
           setCode(data.code);
