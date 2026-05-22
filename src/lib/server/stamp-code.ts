@@ -21,7 +21,11 @@ export function generateStampCode(userId: string): string {
 }
 
 export function verifyStampCode(userId: string, code: string): boolean {
-  if (!code || code.length !== 4) return false;
+  return findValidStampCodeWindow(userId, code) !== null;
+}
+
+export function findValidStampCodeWindow(userId: string, code: string): number | null {
+  if (!code || code.length !== 4) return null;
 
   const currentWindow = getCurrentWindow();
   
@@ -35,9 +39,9 @@ export function verifyStampCode(userId: string, code: string): boolean {
     const expectedBuffer = Buffer.from(expected);
     
     if (actualBuffer.length === expectedBuffer.length && timingSafeEqual(actualBuffer, expectedBuffer)) {
-      return true;
+      return window;
     }
   }
 
-  return false;
+  return null;
 }

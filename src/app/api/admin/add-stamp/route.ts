@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/server/admin-auth";
 import { logLoyaltyEvent } from "@/lib/server/loyalty-events";
 import { assertSupabaseAdminEnv, supabaseAdmin } from "@/lib/supabase/admin";
-import { verifyStampCode } from "@/lib/server/stamp-code";
+import { findValidStampCodeWindow } from "@/lib/server/stamp-code";
 import type { Database } from "@/types/database";
 
 type LoyaltyCard = Database["public"]["Tables"]["loyalty_cards"]["Row"];
@@ -34,11 +34,13 @@ export async function POST(request: NextRequest) {
 
   let finalUserId = "";
   let finalFullName = "";
+  let expectedNote = "";
 
   if (qrToken) {
     try {
       const payload = await verifyQRToken(qrToken);
       finalUserId = payload.userId;
+      expectedNote = `qr:${payload.nonce}`;
       
       const { data } = await supabaseAdmin
         .from("users")
@@ -63,13 +65,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No se encontró cliente con ese DNI." }, { status: 404 });
     }
 
-    const isValid = verifyStampCode(data.id, code!);
-    if (!isValid) {
+    const matchingWindow = findValidStampCodeWindow(data.id, code!);
+    if (matchingWindow === null) {
       return NextResponse.json({ error: "Código incorrecto o expirado." }, { status: 400 });
     }
     
     finalUserId = data.id;
     finalFullName = data.full_name;
+    expectedNote = `code:${matchingWindow}`;
+  }
+
+  // Double check if code/token was already used
+  const { data: existingStamp } = await supabaseAdmin
+    .from("stamps")
+    .select("id")
+    .eq("user_id", finalUserId)
+    .eq("note", expectedNote)
+    .limit(1)
+    .maybeSingle();
+
+  if (existingStamp) {
+    return NextResponse.json({ 
+      error: qrToken 
+        ? "Este código QR ya fue utilizado." 
+        : "Este código ya fue utilizado." 
+    }, { status: 400 });
   }
 
   // 3. Get loyalty card
@@ -86,7 +106,7 @@ export async function POST(request: NextRequest) {
   // 4. Insert into 'stamps' ledger table
   const { error: ledgerError } = await supabaseAdmin
     .from("stamps")
-    .insert({ user_id: finalUserId });
+    .insert({ user_id: finalUserId, note: expectedNote });
 
   if (ledgerError) {
     return NextResponse.json({ error: "Error al registrar el sello en el historial (SQL)." }, { status: 500 });

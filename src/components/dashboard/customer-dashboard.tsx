@@ -179,50 +179,86 @@ export function CustomerDashboard() {
   const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
-    // Initialize AudioContext on first user interaction to bypass autoplay restrictions
+    // Initialize/resume AudioContext on user interaction to bypass autoplay restrictions
     const initAudio = () => {
-      if (!audioCtxRef.current) {
-        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
-        if (AudioContextClass) {
-          audioCtxRef.current = new AudioContextClass();
+      try {
+        let ctx = audioCtxRef.current;
+        if (!ctx) {
+          const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
+          if (AudioContextClass) {
+            ctx = new AudioContextClass();
+            audioCtxRef.current = ctx;
+          }
         }
-      }
-      if (audioCtxRef.current?.state === "suspended") {
-        audioCtxRef.current.resume();
+        if (ctx) {
+          if (ctx.state === "suspended") {
+            ctx.resume();
+          }
+          // Play silent buffer to unlock iOS Safari Web Audio
+          const buffer = ctx.createBuffer(1, 1, 22050);
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(ctx.destination);
+          source.start(0);
+        }
+      } catch (err) {
+        console.error("Failed to initialize or unlock AudioContext:", err);
       }
     };
 
-    window.addEventListener("click", initAudio, { once: true });
-    window.addEventListener("touchstart", initAudio, { once: true });
+    const events = ["click", "touchstart", "touchend", "mousedown", "pointerdown"];
+    events.forEach(event => {
+      window.addEventListener(event, initAudio);
+      document.addEventListener(event, initAudio);
+    });
 
     return () => {
-      window.removeEventListener("click", initAudio);
-      window.removeEventListener("touchstart", initAudio);
+      events.forEach(event => {
+        window.removeEventListener(event, initAudio);
+        document.removeEventListener(event, initAudio);
+      });
     };
   }, []);
 
   const playSuccessSound = () => {
     try {
-      const ctx = audioCtxRef.current;
-      if (!ctx) return;
-      if (ctx.state === "suspended") {
-        ctx.resume();
+      let ctx = audioCtxRef.current;
+      if (!ctx) {
+        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
+        if (AudioContextClass) {
+          ctx = new AudioContextClass();
+          audioCtxRef.current = ctx;
+        }
       }
-      const playTone = (freq: number, startTime: number) => {
-        const osc = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        osc.type = "sine";
-        osc.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        osc.frequency.setValueAtTime(freq, startTime);
-        gainNode.gain.setValueAtTime(0.1, startTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.5);
-        osc.start(startTime);
-        osc.stop(startTime + 0.5);
+      if (!ctx) return;
+
+      const runSound = (c: AudioContext) => {
+        const playTone = (freq: number, startTime: number) => {
+          const osc = c.createOscillator();
+          const gainNode = c.createGain();
+          osc.type = "sine";
+          osc.connect(gainNode);
+          gainNode.connect(c.destination);
+          osc.frequency.setValueAtTime(freq, startTime);
+          gainNode.gain.setValueAtTime(0.35, startTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.5);
+          osc.start(startTime);
+          osc.stop(startTime + 0.5);
+        };
+        const now = c.currentTime;
+        playTone(523.25, now); // C5
+        playTone(659.25, now + 0.15); // E5
       };
-      const now = ctx.currentTime;
-      playTone(523.25, now); // C5
-      playTone(659.25, now + 0.15); // E5
+
+      if (ctx.state === "suspended") {
+        ctx.resume().then(() => {
+          if (audioCtxRef.current) {
+            runSound(audioCtxRef.current);
+          }
+        }).catch(err => console.error("Resume failed", err));
+      } else {
+        runSound(ctx);
+      }
     } catch (e) {
       console.error("Audio error", e);
     }
@@ -341,11 +377,11 @@ export function CustomerDashboard() {
               {rewardReady ? "Recompensa lista" : "Para sumar sellos"}
             </p>
             <h1 className="mt-2 text-3xl font-bold leading-tight text-white sm:text-4xl">
-              {rewardReady ? "Tenes cafe gratis" : "Dicta tu DNI y código"}
+              {rewardReady ? "Tenés café gratis" : "Dictá tu DNI y código"}
             </h1>
             <p className="mx-auto mt-3 mb-6 max-w-md text-sm text-gray-400">
               {rewardReady
-                ? "Mostra esta pantalla para canjear tu recompensa en el mostrador."
+                ? "Mostrá esta pantalla para canjear tu recompensa en el mostrador."
                 : "El barista te pedirá el DNI o escaneará el código QR para sumar tu sello."}
             </p>
 

@@ -14,7 +14,7 @@ export function StampCard({
   totalRewards,
 }: StampCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-3xl glass-panel p-6 sm:p-8 border border-white/5">
+    <div className="relative overflow-hidden rounded-3xl glass-panel p-4 sm:p-8 border border-white/5">
 
 
       <div className="relative z-10">
@@ -39,7 +39,6 @@ export function StampCard({
           </div>
         </div>
 
-        {/* Stamps Row or Reward Celebration */}
         {stamps >= 5 ? (
           <div className="mt-8 flex flex-col items-center justify-center py-6 animate-fade-in">
             <div className="relative mb-4">
@@ -49,26 +48,28 @@ export function StampCard({
               </div>
             </div>
             <h3 className="text-xl font-bold text-white mb-2">¡Café Gratis de Autor!</h3>
-            <p className="text-sm text-gray-400 text-center max-w-xs">Muestra tu código al barista para canjear tu merecida recompensa.</p>
+            <p className="text-sm text-gray-400 text-center max-w-xs">Mostrá esta pantalla al barista para canjear tu merecida recompensa.</p>
           </div>
         ) : (
-          <div className="mt-8 flex items-center justify-center py-4">
+          <div className="mt-8 flex items-center justify-between pt-4 pb-8 w-full">
             {[0, 1, 2, 3, 4].map(idx => {
                 const active = idx < stamps;
                 const isGift = idx === 4;
                 return (
-                    <div key={idx} className="flex items-center">
-                        <div className="flex flex-col items-center gap-2">
-                          <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''} overflow-hidden border-none w-[72px] h-[72px]`}>
-                              <img 
-                                alt="Punto Café Premium Logo" 
-                                className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
-                                src="/logo-gold.png"
-                              />
-                          </div>
-                          <span className="text-[10px] text-gray-500 font-medium">TAZA {idx + 1}</span>
+                    <div key={idx} className="flex items-center flex-1 last:flex-none relative">
+                        <div className="relative flex justify-center items-center">
+                            <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''} overflow-hidden border-none w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 min-[390px]:w-12 min-[390px]:h-12 min-[420px]:w-14 min-[420px]:h-14 sm:w-[72px] sm:h-[72px] flex-shrink-0`}>
+                                <img 
+                                  alt="Punto Café Premium Logo" 
+                                  className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
+                                  src="/logo-gold.png"
+                                />
+                            </div>
+                            <span className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 text-[8px] min-[360px]:text-[10px] text-gray-500 font-medium select-none whitespace-nowrap">
+                              SELLO {idx + 1}
+                            </span>
                         </div>
-                        {idx < 4 && <div className="h-[1px] w-4 sm:w-8 md:w-12 bg-white/10 mb-6 mx-2 sm:mx-4"></div>}
+                        {idx < 4 && <div className="h-[1px] flex-grow min-w-[4px] max-w-[48px] bg-white/10 mx-1 sm:mx-4"></div>}
                     </div>
                 );
             })}

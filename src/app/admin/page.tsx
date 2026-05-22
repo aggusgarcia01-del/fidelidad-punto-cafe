@@ -113,6 +113,143 @@ export default function AdminPage() {
   // QR scanner states
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
+  // Confirm redeem modal state
+  const [isConfirmRedeemOpen, setIsConfirmRedeemOpen] = useState(false);
+
+  // Audio state & logic for scanning / stamping success feedback
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    const initAudio = () => {
+      try {
+        let ctx = audioCtxRef.current;
+        if (!ctx) {
+          const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
+          if (AudioContextClass) {
+            ctx = new AudioContextClass();
+            audioCtxRef.current = ctx;
+          }
+        }
+        if (ctx) {
+          if (ctx.state === "suspended") {
+            ctx.resume();
+          }
+          // Play silent buffer to unlock iOS Safari Web Audio
+          const buffer = ctx.createBuffer(1, 1, 22050);
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(ctx.destination);
+          source.start(0);
+        }
+      } catch (err) {
+        console.error("Failed to initialize or unlock AudioContext:", err);
+      }
+    };
+
+    const events = ["click", "touchstart", "touchend", "mousedown", "pointerdown"];
+    events.forEach(event => {
+      window.addEventListener(event, initAudio);
+      document.addEventListener(event, initAudio);
+    });
+
+    return () => {
+      events.forEach(event => {
+        window.removeEventListener(event, initAudio);
+        document.removeEventListener(event, initAudio);
+      });
+    };
+  }, []);
+
+  const playSuccessSound = () => {
+    try {
+      let ctx = audioCtxRef.current;
+      if (!ctx) {
+        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
+        if (AudioContextClass) {
+          ctx = new AudioContextClass();
+          audioCtxRef.current = ctx;
+        }
+      }
+      if (!ctx) return;
+
+      const runSound = (c: AudioContext) => {
+        const playTone = (freq: number, startTime: number) => {
+          const osc = c.createOscillator();
+          const gainNode = c.createGain();
+          osc.type = "sine";
+          osc.connect(gainNode);
+          gainNode.connect(c.destination);
+          osc.frequency.setValueAtTime(freq, startTime);
+          gainNode.gain.setValueAtTime(0.35, startTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.5);
+          osc.start(startTime);
+          osc.stop(startTime + 0.5);
+        };
+        const now = c.currentTime;
+        playTone(523.25, now); // C5
+        playTone(659.25, now + 0.15); // E5
+      };
+
+      if (ctx.state === "suspended") {
+        ctx.resume().then(() => {
+          if (audioCtxRef.current) {
+            runSound(audioCtxRef.current);
+          }
+        }).catch(err => console.error("Resume failed", err));
+      } else {
+        runSound(ctx);
+      }
+    } catch (e) {
+      console.error("Audio error", e);
+    }
+  };
+
+  const playRedeemSound = () => {
+    try {
+      let ctx = audioCtxRef.current;
+      if (!ctx) {
+        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
+        if (AudioContextClass) {
+          ctx = new AudioContextClass();
+          audioCtxRef.current = ctx;
+        }
+      }
+      if (!ctx) return;
+
+      const runSound = (c: AudioContext) => {
+        const playTone = (freq: number, startTime: number) => {
+          const osc = c.createOscillator();
+          const gainNode = c.createGain();
+          osc.type = "sine";
+          osc.connect(gainNode);
+          gainNode.connect(c.destination);
+          osc.frequency.setValueAtTime(freq, startTime);
+          gainNode.gain.setValueAtTime(0.35, startTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.5);
+          osc.start(startTime);
+          osc.stop(startTime + 0.5);
+        };
+        const now = c.currentTime;
+        playTone(523.25, now); // C5
+        playTone(659.25, now + 0.12); // E5
+        playTone(783.99, now + 0.24); // G5
+        playTone(1046.50, now + 0.36); // C6
+      };
+
+      if (ctx.state === "suspended") {
+        ctx.resume().then(() => {
+          if (audioCtxRef.current) {
+            runSound(audioCtxRef.current);
+          }
+        }).catch(err => console.error("Resume failed", err));
+      } else {
+        runSound(ctx);
+      }
+    } catch (e) {
+      console.error("Audio error", e);
+    }
+  };
+
   const birthdayToday = selectedCustomer ? isBirthdayToday(selectedCustomer.birth_date) : false;
 
   useEffect(() => {
@@ -270,6 +407,7 @@ export default function AdminPage() {
         stamps: json.stamps,
         message: json.message
       });
+      playSuccessSound();
       setCode("");
 
       void loadCustomers(searchQuery);
@@ -291,13 +429,14 @@ export default function AdminPage() {
     }
   };
 
-  const redeemReward = async () => {
+  const redeemReward = () => {
     if (!selectedCustomer) return;
-    const confirmed = window.confirm(
-      `¿Confirmar canje de café gratis para ${selectedCustomer.full_name}?`
-    );
-    if (!confirmed) return;
+    setIsConfirmRedeemOpen(true);
+  };
 
+  const executeRedeem = async () => {
+    if (!selectedCustomer) return;
+    setIsConfirmRedeemOpen(false);
     setLoading(true);
     setError(null);
     try {
@@ -317,6 +456,7 @@ export default function AdminPage() {
         stamps: 0,
         message: json.message || "¡Café canjeado con éxito!"
       });
+      playRedeemSound();
 
       void loadCustomers(searchQuery);
       if (json.card) {
@@ -328,6 +468,8 @@ export default function AdminPage() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
+    } catch {
+      setError("Error de red al canjear la recompensa.");
     } finally {
       setLoading(false);
     }
@@ -413,6 +555,7 @@ export default function AdminPage() {
           stamps: json.stamps,
           message: json.message
         });
+        playSuccessSound();
 
         // Refresh UI
         void loadCustomers(searchQuery);
@@ -506,10 +649,10 @@ export default function AdminPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex overflow-hidden p-4 md:p-6 gap-6 max-w-[1600px] mx-auto w-full flex-col md:flex-row">
+      <main className="flex-1 flex overflow-y-auto md:overflow-hidden p-4 md:p-6 gap-6 max-w-[1600px] mx-auto w-full flex-col md:flex-row">
         
         {/* Left Sidebar (Client List) */}
-        <aside className={`w-full md:w-[350px] flex flex-col gap-4 ${selectedCustomer ? 'hidden md:flex' : 'flex'} order-2 md:order-1`}>
+        <aside className={`w-full md:w-[350px] flex flex-col gap-4 h-auto md:h-full ${selectedCustomer ? 'hidden md:flex' : 'flex'} order-2 md:order-1`}>
           <div className="flex justify-between items-start mb-2">
             <div>
               <h2 className="text-xl font-bold text-white mb-1">Clientes Registrados</h2>
@@ -536,7 +679,7 @@ export default function AdminPage() {
               className="premium-input w-full pl-10 pr-4 py-3 rounded-xl text-sm transition-all"
             />
           </div>
-          <div className="flex-1 overflow-y-auto pr-2 mt-2 space-y-3">
+          <div className="h-auto md:flex-1 overflow-visible md:overflow-y-auto pr-2 mt-2 space-y-3">
             {customers.length > 0 ? (
               customers.map((c) => {
                 const card = getCard(c);
@@ -564,7 +707,7 @@ export default function AdminPage() {
         </aside>
 
         {/* Main Workspace */}
-        <section className={`flex-1 flex flex-col gap-6 overflow-y-auto pr-1 flex order-1 md:order-2`}>
+        <section className={`w-full md:flex-1 flex flex-col gap-6 overflow-visible md:overflow-y-auto pr-1 order-1 md:order-2`}>
           
           {/* Toast Notification */}
           {success && (
@@ -648,24 +791,26 @@ export default function AdminPage() {
                     </div>
                   </div>
                   
-                  {/* Stamps Row mimicking SCREEN_26 */}
-                  <div className="flex items-center justify-center gap-4 sm:gap-8 py-4">
+                  {/* Stamps Row mimicking client view */}
+                  <div className="flex items-center justify-between pt-4 pb-8 w-full">
                     {[0, 1, 2, 3, 4].map(idx => {
                         const active = idx < selectedStamps;
                         const isGift = idx === 4;
                         return (
-                            <div key={idx} className="flex items-center">
-                                <div className="flex flex-col items-center gap-3">
-                                  <div className={`stamp-circle ${active ? 'active' : ''} ${isGift && !active ? 'gift' : ''} overflow-hidden border-none w-[72px] h-[72px]`}>
-                                      <img 
-                                        alt="Punto Café Premium Logo" 
-                                        className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
-                                        src="/logo-gold.png"
-                                      />
-                                  </div>
-                                  <span className={`text-[10px] font-bold tracking-widest ${active ? 'text-brand-accent' : 'text-gray-600'}`}>SELLO {idx + 1}</span>
+                            <div key={idx} className="flex items-center flex-1 last:flex-none relative">
+                                <div className="relative flex justify-center items-center">
+                                    <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''} overflow-hidden border-none w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 min-[390px]:w-12 min-[390px]:h-12 min-[420px]:w-14 min-[420px]:h-14 sm:w-[72px] sm:h-[72px] flex-shrink-0`}>
+                                        <img 
+                                          alt="Punto Café Premium Logo" 
+                                          className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
+                                          src="/logo-gold.png"
+                                        />
+                                    </div>
+                                    <span className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 text-[8px] min-[360px]:text-[10px] text-gray-500 font-medium select-none whitespace-nowrap">
+                                      SELLO {idx + 1}
+                                    </span>
                                 </div>
-                                {idx < 4 && <div className="h-[1px] w-8 sm:w-12 bg-white/10 hidden sm:block mt-[-20px] ml-4 sm:ml-8"></div>}
+                                {idx < 4 && <div className="h-[1px] flex-grow min-w-[4px] max-w-[48px] bg-white/10 mx-1 sm:mx-4"></div>}
                             </div>
                         );
                     })}
@@ -752,7 +897,8 @@ export default function AdminPage() {
                           <p className="font-semibold text-white text-sm">{h.type === 'stamp_added' ? 'Sello Agregado' : 'Canje de Recompensa'}</p>
                           <p className="text-xs text-gray-500 mt-1">
                             {new Date(h.created_at).toLocaleString('es-AR', {
-                              day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+                              day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+                              timeZone: 'America/Argentina/Buenos_Aires'
                             })}
                           </p>
                         </div>
@@ -895,6 +1041,44 @@ export default function AdminPage() {
           onScan={handleQrScanned} 
           onClose={() => setIsQrModalOpen(false)} 
         />
+      )}
+
+      {/* Confirmar Canje Modal */}
+      {isConfirmRedeemOpen && selectedCustomer && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div
+            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#121212] p-6 text-center shadow-2xl animate-scale-in space-y-6"
+          >
+            <div className="mx-auto h-16 w-16 rounded-full bg-brand-accent/10 border border-brand-accent/30 flex items-center justify-center">
+              <Gift className="h-8 w-8 text-brand-accent animate-pulse" />
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">¿Confirmar Canje?</h3>
+              <p className="text-sm text-gray-400">
+                Se canjeará el café de regalo para <strong className="text-white">{selectedCustomer.full_name}</strong>. Esta acción reiniciará su acumulador de sellos a 0.
+              </p>
+            </div>
+
+            <div className="flex gap-4 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsConfirmRedeemOpen(false)}
+                className="flex-1 font-label-md py-3 rounded-full border border-surface-variant/30 text-surface-variant hover:text-white hover:bg-white/5 transition-all duration-300"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={executeRedeem}
+                disabled={loading}
+                className="flex-1 bg-brand-accent text-black font-bold font-label-md py-3 rounded-full hover:bg-brand-accent/90 transition-all duration-300 shadow-[0_4px_20px_rgba(214,196,171,0.2)] disabled:opacity-50"
+              >
+                {loading ? "Procesando..." : "Confirmar"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
