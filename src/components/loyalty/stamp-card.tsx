@@ -15,10 +15,7 @@ export function StampCard({
 }: StampCardProps) {
   return (
     <div className="relative overflow-hidden rounded-3xl glass-panel p-6 sm:p-8 border border-white/5">
-      {/* Brand pattern as a gorgeous, subtle watermark in the card background */}
-      <div className="absolute right-[-20px] top-[-20px] text-white/5 pointer-events-none transform rotate-12 scale-125">
-        <BrandPattern count={1} />
-      </div>
+
 
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-4">

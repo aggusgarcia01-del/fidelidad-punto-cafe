@@ -36,11 +36,11 @@ export function BrandIcon({ size = "md", className = "" }: { size?: "sm" | "md" 
   };
 
   return (
-    <div className={`grid place-items-center rounded-xl bg-espresso text-[#f6f1eb] shadow-lift shrink-0 ${sizeClasses[size]} ${className} overflow-hidden`}>
+    <div className={`grid place-items-center rounded-full shrink-0 ${sizeClasses[size]} ${className} overflow-hidden`}>
       <img 
         src="/logo-circle.png" 
         alt="Punto Café Logo" 
-        className="w-[85%] h-[85%] object-contain" 
+        className="w-full h-full object-cover" 
       />
     </div>
   );

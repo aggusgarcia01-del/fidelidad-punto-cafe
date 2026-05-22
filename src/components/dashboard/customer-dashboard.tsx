@@ -2,13 +2,10 @@
 
 import { useEffect, useMemo, useState, useRef } from "react";
 import {
-  Apple,
   Coffee,
   LogOut,
   QrCode,
   RefreshCw,
-  Wallet,
-  X,
   Gift,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
@@ -29,11 +26,7 @@ export function CustomerDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [walletModal, setWalletModal] = useState<{
-    isOpen: boolean;
-    provider: "apple" | "google" | null;
-    message: string;
-  }>({ isOpen: false, provider: null, message: "" });
+
 
   const prevStampsRef = useRef<number | null>(null);
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
@@ -99,28 +92,6 @@ export function CustomerDashboard() {
     window.location.href = "/";
   };
 
-  const openWallet = async (provider: "apple" | "google") => {
-    try {
-      const { data } = await supabase.auth.getSession();
-      const token = data.session?.access_token;
-
-      const response = await fetch(`/api/wallet/${provider}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      });
-      const json = await response.json();
-      setWalletModal({
-        isOpen: true,
-        provider,
-        message: json.message ?? "Wallet listo para configurar.",
-      });
-    } catch {
-      setWalletModal({
-        isOpen: true,
-        provider,
-        message: "Error al conectar con el servicio de Wallet.",
-      });
-    }
-  };
 
   // Canvas Confetti logic
   const triggerConfetti = () => {
@@ -392,86 +363,13 @@ export function CustomerDashboard() {
             totalRewards={profile.card.total_rewards}
           />
 
-          <div className="grid gap-4 sm:grid-cols-2 mt-4">
-            <button onClick={() => openWallet("apple")} className="bg-inverse-on-surface text-primary-container font-label-md h-14 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] hover:-translate-y-0.5 active:translate-y-0">
-              <Apple className="h-5 w-5" />
-              Apple Wallet
-            </button>
-            <button onClick={() => openWallet("google")} className="bg-inverse-on-surface text-primary-container font-label-md h-14 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:shadow-[0_4px_25px_rgba(214,196,171,0.2)] hover:-translate-y-0.5 active:translate-y-0">
-              <Wallet className="h-5 w-5" />
-              Google Wallet
-            </button>
-          </div>
+
 
           <VisitHistory />
         </section>
       </div>
 
-      {/* Styled Wallet Pass Modal */}
-      {walletModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          {/* Modal content unchanged */}
-          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#121212] p-6 text-left shadow-2xl animate-scale-in">
-            <button
-              onClick={() => setWalletModal({ isOpen: false, provider: null, message: "" })}
-              className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <div className="flex items-center gap-3 mb-6">
-              <div className={`p-2.5 rounded-xl border ${walletModal.provider === 'apple' ? 'bg-white/5 border-white/10 text-white' : 'bg-brand-accent/10 border-brand-accent/20 text-brand-accent'}`}>
-                {walletModal.provider === 'apple' ? <Apple className="h-6 w-6" /> : <Wallet className="h-6 w-6" />}
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-white leading-tight">
-                  {walletModal.provider === "apple" ? "Apple Wallet" : "Google Wallet"}
-                </h3>
-                <p className="text-xs text-gray-500 font-medium">Tarjeta de Membresía Digital</p>
-              </div>
-            </div>
-            <div className="relative w-full aspect-[1.58/1] rounded-2xl bg-gradient-to-br from-brand-black via-[#1f1f1f] to-brand-black border border-white/5 overflow-hidden shadow-lg p-5 flex flex-col justify-between mb-6">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-lg bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-brand-accent">
-                    <Coffee className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold tracking-wider text-white">PUNTO CAFÉ</p>
-                    <p className="text-[9px] text-gray-500">Membresía de Autor</p>
-                  </div>
-                </div>
-                <span className="text-[9px] font-bold text-brand-accent px-2 py-0.5 rounded-full bg-brand-accent/10 border border-brand-accent/20 uppercase tracking-widest">
-                  VIP PASS
-                </span>
-              </div>
-              <div className="flex justify-between items-end">
-                <div>
-                  <p className="text-[9px] text-gray-500 uppercase tracking-widest">Titular</p>
-                  <p className="text-xs font-bold text-white truncate max-w-[180px]">{profile?.user.full_name}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[9px] text-gray-500 uppercase tracking-widest">Progreso</p>
-                  <p className="text-xs font-extrabold text-brand-accent">{profile?.card.stamps}/5 Sellos</p>
-                </div>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-accent/30 to-transparent" />
-            </div>
-            <div className="bg-white/5 border border-white/5 rounded-2xl p-4 mb-6">
-              <p className="text-xs text-gray-400 leading-relaxed font-medium">
-                {walletModal.message}
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setWalletModal({ isOpen: false, provider: null, message: "" })}
-                className="w-full h-11 text-xs font-bold btn-glow rounded-xl"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Toast Notification */}
       {toast && (
