@@ -550,7 +550,7 @@ export default function AdminPage() {
                         <h3 className={`font-bold text-base ${isSelected ? 'text-white' : 'text-gray-200'}`}>{c.full_name}</h3>
                         <p className={`text-xs mt-1 ${isSelected ? 'text-gray-400' : 'text-gray-500'}`}>DNI: {formatDni(c.dni || "Sin DNI")}</p>
                       </div>
-                      <div className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 ${isSelected ? 'bg-white/10 text-brand-accent' : stampsCount >= 5 ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/30' : 'bg-white/5 text-gray-400'}`}>
+                      <div className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 ${isSelected ? 'bg-brand-accent/10 text-brand-accent' : stampsCount >= 5 ? 'bg-brand-accent/20 text-brand-accent border border-brand-accent/30' : 'bg-white/5 text-gray-400'}`}>
                         <Coffee className={`h-3 w-3 ${isSelected || stampsCount >= 5 ? 'text-brand-accent' : ''}`} /> {stampsCount}/5
                       </div>
                     </div>
@@ -656,8 +656,12 @@ export default function AdminPage() {
                         return (
                             <div key={idx} className="flex items-center">
                                 <div className="flex flex-col items-center gap-3">
-                                  <div className={`stamp-circle ${active ? 'active' : ''} ${isGift && !active ? 'gift' : ''}`}>
-                                      {isGift ? <Gift className="h-6 w-6" /> : <Coffee className="h-6 w-6" />}
+                                  <div className={`stamp-circle ${active ? 'active' : ''} ${isGift && !active ? 'gift' : ''} overflow-hidden border-none w-[72px] h-[72px]`}>
+                                      <img 
+                                        alt="Punto Café Premium Logo" 
+                                        className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
+                                        src="https://lh3.googleusercontent.com/aida/ADBb0uh7UlelO7YyABnhctM4eldejBMs7gZ2MmxuAoKfVFxvrzKprSnnYv_m6xf9qR1NlK7VeHtci-F6w7mfywaWUNkPqxr6YthulBC6DIn6ni7oJlLfp-H9Mbejv0vlOxjADfh93gK_qwtWPMdeKgkzq6VEcH1IhwT6A7t5Te79Zp7OjaUYYzUEoS7CfeGzDVwKHOmwMNMmph8UVnz9we7ZzQknhiBfSz9exaczw8cfkZ2O_MzAzyz7dnhjznc"
+                                      />
                                   </div>
                                   <span className={`text-[10px] font-bold tracking-widest ${active ? 'text-brand-accent' : 'text-gray-600'}`}>SELLO {idx + 1}</span>
                                 </div>
@@ -676,7 +680,7 @@ export default function AdminPage() {
                 <form onSubmit={addStamp} className="glass-panel rounded-2xl p-6 flex flex-col justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-2">
-                      <Plus className="h-4 w-4 text-gray-400" /> Sumar sello
+                      <Plus className="h-4 w-4 text-brand-accent" /> <span className="text-brand-accent">Sumar sello</span>
                     </h3>
                     <p className="text-sm text-gray-400 mb-6">Ingresa el código temporal de 4 dígitos generado en la app del cliente.</p>
                     <div className="mb-6">
@@ -694,7 +698,7 @@ export default function AdminPage() {
                     </div>
                   </div>
                   {error && <p className="mb-4 text-xs text-red-400 text-center">{error}</p>}
-                  <button type="submit" disabled={loading} className="w-full btn-glow py-3.5 rounded-xl font-semibold text-sm disabled:opacity-50">
+                  <button type="submit" disabled={loading} className="w-full bg-brand-accent hover:bg-brand-accent/90 text-black py-3.5 rounded-xl font-semibold text-sm transition-all shadow-[0_0_15px_rgba(214,196,171,0.2)] hover:shadow-[0_0_25px_rgba(214,196,171,0.4)] disabled:opacity-50">
                     Confirmar Sello
                   </button>
                 </form>

@@ -16,7 +16,7 @@ const config: Config = {
           dark: '#1a1a1a',
           gray: '#2a2a2a',
           light: '#f5f5f5',
-          accent: '#d4af37',
+          accent: '#d6c4ab',
         },
         
         "surface-variant": "#e2e2e2",
