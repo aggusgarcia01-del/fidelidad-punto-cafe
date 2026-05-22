@@ -205,12 +205,38 @@ export function CustomerDashboard() {
 
   // Toast and Sound logic
   const [toast, setToast] = useState<{ message: string, type: "success" | "reward" } | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    // Initialize AudioContext on first user interaction to bypass autoplay restrictions
+    const initAudio = () => {
+      if (!audioCtxRef.current) {
+        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtxRef.current = new AudioContextClass();
+        }
+      }
+      if (audioCtxRef.current?.state === "suspended") {
+        audioCtxRef.current.resume();
+      }
+    };
+
+    window.addEventListener("click", initAudio, { once: true });
+    window.addEventListener("touchstart", initAudio, { once: true });
+
+    return () => {
+      window.removeEventListener("click", initAudio);
+      window.removeEventListener("touchstart", initAudio);
+    };
+  }, []);
 
   const playSuccessSound = () => {
     try {
-      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!AudioContextClass) return;
-      const ctx = new AudioContextClass();
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      if (ctx.state === "suspended") {
+        ctx.resume();
+      }
       const playTone = (freq: number, startTime: number) => {
         const osc = ctx.createOscillator();
         const gainNode = ctx.createGain();
@@ -227,7 +253,7 @@ export function CustomerDashboard() {
       playTone(523.25, now); // C5
       playTone(659.25, now + 0.15); // E5
     } catch (e) {
-      // Ignore audio errors
+      console.error("Audio error", e);
     }
   };
 
