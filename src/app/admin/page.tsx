@@ -660,7 +660,7 @@ export default function AdminPage() {
                                       <img 
                                         alt="Punto Café Premium Logo" 
                                         className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
-                                        src="/logo-circle.png"
+                                        src="/logo-gold.png"
                                       />
                                   </div>
                                   <span className={`text-[10px] font-bold tracking-widest ${active ? 'text-brand-accent' : 'text-gray-600'}`}>SELLO {idx + 1}</span>

@@ -66,7 +66,7 @@ export function StampCard({
                               <img 
                                 alt="Punto Café Premium Logo" 
                                 className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
-                                src="/logo-circle.png"
+                                src="/logo-gold.png"
                               />
                           </div>
                           <span className="text-[10px] text-gray-500 font-medium">TAZA {idx + 1}</span>

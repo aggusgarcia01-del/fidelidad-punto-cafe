@@ -39,8 +39,8 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-2 md:gap-4">
             {/* Stamp 1 */}
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0s' }} src="/logo-circle.png" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center overflow-hidden">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover opacity-30 animate-stamp-fill" style={{ animationDelay: '0s' }} src="/logo-gold.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -48,8 +48,8 @@ export default function HomePage() {
             
             {/* Stamp 2 */}
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '0.5s' }} src="/logo-circle.png" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center overflow-hidden">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover opacity-30 animate-stamp-fill" style={{ animationDelay: '0.5s' }} src="/logo-gold.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -57,8 +57,8 @@ export default function HomePage() {
             
             {/* Stamp 3 */}
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1s' }} src="/logo-circle.png" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center overflow-hidden">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover opacity-30 animate-stamp-fill" style={{ animationDelay: '1s' }} src="/logo-gold.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -66,8 +66,8 @@ export default function HomePage() {
             
             {/* Stamp 4 */}
             <div className="flex flex-col items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '1.5s' }} src="/logo-circle.png" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-secondary-fixed-dim flex items-center justify-center overflow-hidden">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover opacity-30 animate-stamp-fill" style={{ animationDelay: '1.5s' }} src="/logo-gold.png" />
               </div>
             </div>
             {/* Connector Line */}
@@ -75,8 +75,8 @@ export default function HomePage() {
             
             {/* Stamp 5 (Reward) */}
             <div className="flex flex-col items-center relative">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-secondary-fixed-dim border-dashed flex items-center justify-center">
-                <img alt="Sello Punto Café" className="w-full h-full object-cover rounded-full opacity-30 animate-stamp-fill" style={{ animationDelay: '2s' }} src="/logo-circle.png" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-secondary-fixed-dim border-dashed flex items-center justify-center overflow-hidden">
+                <img alt="Sello Punto Café" className="w-full h-full object-cover opacity-30 animate-stamp-fill" style={{ animationDelay: '2s' }} src="/logo-gold.png" />
               </div>
             </div>
           </div>
