@@ -11,6 +11,8 @@ function normalizeDni(value: string) {
   return value.replace(/\D/g, "");
 }
 
+import { verifyQRToken } from "@/lib/qr-token";
+
 export async function POST(request: NextRequest) {
   const admin = await requireAdmin();
 
@@ -20,42 +22,61 @@ export async function POST(request: NextRequest) {
 
   assertSupabaseAdminEnv();
 
-  const { dni, code } = (await request.json().catch(() => ({}))) as {
+  const { dni, code, qrToken } = (await request.json().catch(() => ({}))) as {
     dni?: string;
     code?: string;
+    qrToken?: string;
   };
 
-  if (!dni || !code) {
-    return NextResponse.json({ error: "DNI y código son requeridos." }, { status: 400 });
+  if (!qrToken && (!dni || !code)) {
+    return NextResponse.json({ error: "DNI y código o QR Token son requeridos." }, { status: 400 });
   }
 
-  const normalizedDni = normalizeDni(dni);
+  let finalUserId = "";
+  let finalFullName = "";
 
-  // 1. Find user by DNI
-  const { data, error: userError } = await supabaseAdmin
-    .from("users")
-    .select("id, full_name")
-    .eq("dni", normalizedDni)
-    .single();
+  if (qrToken) {
+    try {
+      const payload = await verifyQRToken(qrToken);
+      finalUserId = payload.userId;
+      
+      const { data } = await supabaseAdmin
+        .from("users")
+        .select("full_name")
+        .eq("id", finalUserId)
+        .single();
+        
+      if (!data) throw new Error("Usuario no encontrado");
+      finalFullName = data.full_name;
+    } catch {
+      return NextResponse.json({ error: "QR inválido o expirado." }, { status: 400 });
+    }
+  } else {
+    const normalizedDni = normalizeDni(dni!);
+    const { data, error: userError } = await supabaseAdmin
+      .from("users")
+      .select("id, full_name")
+      .eq("dni", normalizedDni)
+      .single();
 
-  const user = data as { id: string; full_name: string } | null;
+    if (userError || !data) {
+      return NextResponse.json({ error: "No se encontró cliente con ese DNI." }, { status: 404 });
+    }
 
-  if (userError || !user) {
-    return NextResponse.json({ error: "No se encontró cliente con ese DNI." }, { status: 404 });
-  }
-
-  // 2. Verify rotating code
-  const isValid = verifyStampCode(user.id, code);
-
-  if (!isValid) {
-    return NextResponse.json({ error: "Código incorrecto o expirado." }, { status: 400 });
+    const isValid = verifyStampCode(data.id, code!);
+    if (!isValid) {
+      return NextResponse.json({ error: "Código incorrecto o expirado." }, { status: 400 });
+    }
+    
+    finalUserId = data.id;
+    finalFullName = data.full_name;
   }
 
   // 3. Get loyalty card
   const { data: card, error: cardError } = await supabaseAdmin
     .from("loyalty_cards")
     .select("id, stamps, total_rewards")
-    .eq("user_id", user.id)
+    .eq("user_id", finalUserId)
     .single<LoyaltyCard>();
 
   if (cardError || !card) {
@@ -65,7 +86,7 @@ export async function POST(request: NextRequest) {
   // 4. Insert into 'stamps' ledger table
   const { error: ledgerError } = await supabaseAdmin
     .from("stamps")
-    .insert({ user_id: user.id });
+    .insert({ user_id: finalUserId });
 
   if (ledgerError) {
     return NextResponse.json({ error: "Error al registrar el sello en el historial (SQL)." }, { status: 500 });
@@ -86,7 +107,7 @@ export async function POST(request: NextRequest) {
 
   // 6. Log loyalty event
   await logLoyaltyEvent({
-    user_id: user.id,
+    user_id: finalUserId,
     card_id: card.id,
     type: "stamp_added",
     stamps_before: card.stamps,
@@ -95,7 +116,7 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json({
-    customerName: user.full_name,
+    customerName: finalFullName,
     stamps: updatedCard.stamps,
     message: updatedCard.stamps >= 5
       ? "Sello agregado. ¡El cliente completó los 5 sellos para su café gratis!"

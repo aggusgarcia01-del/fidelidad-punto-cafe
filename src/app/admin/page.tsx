@@ -409,8 +409,8 @@ export default function AdminPage() {
         }
 
         setSuccess({
-          customerName: json.card?.customer?.full_name || "Cliente (QR)",
-          stamps: json.card.stamps,
+          customerName: json.customerName || "Cliente (QR)",
+          stamps: json.stamps,
           message: json.message
         });
 
