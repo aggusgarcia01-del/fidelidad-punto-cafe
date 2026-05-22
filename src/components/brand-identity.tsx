@@ -11,17 +11,40 @@ interface BrandIdentityProps {
  */
 export function BrandText({ size = "md", className = "" }: { size?: "sm" | "md" | "lg"; className?: string }) {
   const sizeClasses = {
-    sm: "h-6",
-    md: "h-8",
-    lg: "h-12",
+    sm: "text-lg tracking-wide",
+    md: "text-2xl tracking-wide",
+    lg: "text-4xl tracking-wider",
+  };
+
+  const oSize = {
+    sm: "h-[0.55em] w-[0.55em] border-[1.8px] mx-[0.04em]",
+    md: "h-[0.62em] w-[0.62em] border-[2.2px] mx-[0.05em]",
+    lg: "h-[0.65em] w-[0.65em] border-[3px] mx-[0.06em]",
+  };
+
+  const dotSize = {
+    sm: "h-[1.5px] w-[1.5px]",
+    md: "h-[2px] w-[2px]",
+    lg: "h-[3.5px] w-[3.5px]",
   };
 
   return (
-    <img 
-      src="/punto-cafe-text.png" 
-      alt="Punto Café" 
-      className={`object-contain ${sizeClasses[size]} ${className}`} 
-    />
+    <div className={`font-sans select-none flex items-center gap-1.5 ${sizeClasses[size]} ${className}`}>
+      {/* "punto" in lowercase */}
+      <span className="font-normal text-espresso flex items-center lowercase leading-none">
+        p
+        u
+        n
+        t
+        <span className={`inline-flex items-center justify-center relative rounded-full border-espresso/90 border-solid ${oSize[size]}`}>
+          <span className={`absolute bg-espresso/90 rounded-full ${dotSize[size]}`} />
+        </span>
+      </span>
+      {/* "café" in lowercase bold */}
+      <span className="font-extrabold text-caramel lowercase leading-none">
+        café
+      </span>
+    </div>
   );
 }
 
@@ -36,12 +59,20 @@ export function BrandIcon({ size = "md", className = "" }: { size?: "sm" | "md" 
   };
 
   return (
-    <div className={`grid place-items-center rounded-xl bg-espresso text-[#f6f1eb] shadow-lift shrink-0 ${sizeClasses[size]} ${className} overflow-hidden`}>
-      <img 
-        src="/logo-circle.png" 
-        alt="Punto Café Logo" 
-        className="w-[85%] h-[85%] object-contain" 
-      />
+    <div className={`grid place-items-center rounded-xl bg-espresso text-[#f6f1eb] shadow-lift shrink-0 ${sizeClasses[size]} ${className}`}>
+      <svg viewBox="0 0 100 100" className="h-[75%] w-[75%]" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Saucer (outer circle) */}
+        <circle cx="50" cy="50" r="43" stroke="currentColor" strokeWidth="4.5"/>
+        {/* Cup body (inner circle) */}
+        <circle cx="50" cy="50" r="32" fill="currentColor"/>
+        {/* Handle */}
+        <path d="M78 44 C84 44, 89 47, 89 50 C89 53, 84 56, 78 56 Z" fill="currentColor"/>
+        {/* Reflection (white arc) */}
+        <path d="M33 50 A 17 17 0 0 1 50 33" stroke="#f6f1eb" strokeWidth="3" strokeLinecap="round"/>
+        {/* Center "punto" (white circle + dot) */}
+        <circle cx="50" cy="50" r="8" stroke="#f6f1eb" strokeWidth="2.5"/>
+        <circle cx="50" cy="50" r="2.5" fill="#f6f1eb"/>
+      </svg>
     </div>
   );
 }

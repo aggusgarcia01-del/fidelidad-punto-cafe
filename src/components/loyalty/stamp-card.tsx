@@ -62,12 +62,16 @@ export function StampCard({
                 return (
                     <div key={idx} className="flex items-center">
                         <div className="flex flex-col items-center gap-2">
-                          <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''} overflow-hidden border-none w-[72px] h-[72px]`}>
-                              <img 
-                                alt="Punto Café Premium Logo" 
-                                className={`w-full h-full object-cover ${!active ? 'opacity-20' : ''}`} 
-                                src="/logo-circle.png"
-                              />
+                          <div className={`stamp-circle ${active ? 'active scale-105' : ''} ${isGift && !active ? 'gift' : ''}`}>
+                              {isGift ? <Gift className="h-5 w-5" /> : (
+                                <svg viewBox="0 0 100 100" className="h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="6"/>
+                                  <circle cx="50" cy="50" r="30" fill="currentColor"/>
+                                  <path d="M34 50 A 16 16 0 0 1 50 34" stroke={active ? "#d4af37" : "currentColor"} strokeWidth="4.5" strokeLinecap="round"/>
+                                  <circle cx="50" cy="50" r="7" stroke={active ? "#d4af37" : "currentColor"} strokeWidth="3"/>
+                                  <circle cx="50" cy="50" r="2" fill={active ? "#d4af37" : "currentColor"}/>
+                                </svg>
+                              )}
                           </div>
                           <span className="text-[10px] text-gray-500 font-medium">TAZA {idx + 1}</span>
                         </div>
