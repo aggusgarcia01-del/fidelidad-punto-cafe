@@ -9,6 +9,7 @@ import {
   RefreshCw,
   Wallet,
   X,
+  Gift,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
@@ -187,18 +188,67 @@ export function CustomerDashboard() {
     animate();
   };
 
+  // Update polling
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    const startPolling = () => {
+      interval = setInterval(() => {
+        if (document.visibilityState === "visible") {
+          void loadProfile({ silent: true });
+        }
+      }, 3000);
+    };
+    
+    startPolling();
+    return () => clearInterval(interval);
+  }, [supabase]);
+
+  // Toast and Sound logic
+  const [toast, setToast] = useState<{ message: string, type: "success" | "reward" } | null>(null);
+
+  const playSuccessSound = () => {
+    try {
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const playTone = (freq: number, startTime: number) => {
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.type = "sine";
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.frequency.setValueAtTime(freq, startTime);
+        gainNode.gain.setValueAtTime(0.1, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.5);
+        osc.start(startTime);
+        osc.stop(startTime + 0.5);
+      };
+      const now = ctx.currentTime;
+      playTone(523.25, now); // C5
+      playTone(659.25, now + 0.15); // E5
+    } catch (e) {
+      // Ignore audio errors
+    }
+  };
+
   useEffect(() => {
     if (profile?.card) {
       if (prevStampsRef.current !== null && profile.card.stamps > prevStampsRef.current) {
-        // Trigger micro delay to allow browser to render DOM changes before confetti
+        const isReward = profile.card.stamps >= 5;
+        playSuccessSound();
+        setToast({
+          message: isReward ? "¡Completaste tus 5 sellos! Café gratis." : "¡Sello Ganado!",
+          type: isReward ? "reward" : "success"
+        });
+        
+        setTimeout(() => setToast(null), 4000);
         setTimeout(() => triggerConfetti(), 100);
       }
       prevStampsRef.current = profile.card.stamps;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.card?.stamps]);
 
-  // Supabase Realtime Subscription
+  // Supabase Realtime Subscription (Fall back to polling if not enabled)
   useEffect(() => {
     if (!profile?.card?.id) return;
 
@@ -334,16 +384,14 @@ export function CustomerDashboard() {
       {/* Styled Wallet Pass Modal */}
       {walletModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          {/* Modal content unchanged */}
           <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#121212] p-6 text-left shadow-2xl animate-scale-in">
-            {/* Close button */}
             <button
               onClick={() => setWalletModal({ isOpen: false, provider: null, message: "" })}
               className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
-
-            {/* Title */}
             <div className="flex items-center gap-3 mb-6">
               <div className={`p-2.5 rounded-xl border ${walletModal.provider === 'apple' ? 'bg-white/5 border-white/10 text-white' : 'bg-brand-accent/10 border-brand-accent/20 text-brand-accent'}`}>
                 {walletModal.provider === 'apple' ? <Apple className="h-6 w-6" /> : <Wallet className="h-6 w-6" />}
@@ -355,8 +403,6 @@ export function CustomerDashboard() {
                 <p className="text-xs text-gray-500 font-medium">Tarjeta de Membresía Digital</p>
               </div>
             </div>
-
-            {/* Pass Preview (Card Mockup) */}
             <div className="relative w-full aspect-[1.58/1] rounded-2xl bg-gradient-to-br from-brand-black via-[#1f1f1f] to-brand-black border border-white/5 overflow-hidden shadow-lg p-5 flex flex-col justify-between mb-6">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
@@ -372,7 +418,6 @@ export function CustomerDashboard() {
                   VIP PASS
                 </span>
               </div>
-
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-[9px] text-gray-500 uppercase tracking-widest">Titular</p>
@@ -383,19 +428,13 @@ export function CustomerDashboard() {
                   <p className="text-xs font-extrabold text-brand-accent">{profile?.card.stamps}/5 Sellos</p>
                 </div>
               </div>
-              
-              {/* Subtle decorative gold line */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-accent/30 to-transparent" />
             </div>
-
-            {/* Info Message */}
             <div className="bg-white/5 border border-white/5 rounded-2xl p-4 mb-6">
               <p className="text-xs text-gray-400 leading-relaxed font-medium">
                 {walletModal.message}
               </p>
             </div>
-
-            {/* Action buttons */}
             <div className="flex gap-3">
               <button
                 onClick={() => setWalletModal({ isOpen: false, provider: null, message: "" })}
@@ -404,6 +443,16 @@ export function CustomerDashboard() {
                 Entendido
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] animate-bounce-in flex flex-col items-center pointer-events-none">
+          <div className={`px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md border ${toast.type === 'reward' ? 'bg-brand-accent/20 border-brand-accent/30 text-brand-accent' : 'bg-green-500/20 border-green-500/30 text-green-400'} font-bold flex items-center gap-3`}>
+            {toast.type === 'reward' ? <Gift className="h-6 w-6" /> : <Coffee className="h-6 w-6 animate-pulse" />}
+            <span className="text-lg tracking-wide">{toast.message}</span>
           </div>
         </div>
       )}
