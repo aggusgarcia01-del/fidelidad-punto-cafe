@@ -103,7 +103,11 @@ export function CustomerDashboard() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    const logoImg = new Image();
+    logoImg.src = "/logo-circle.png";
+
     const colors = ["#d4af37", "#f5f5f5", "#ffffff", "#aa7c11", "#b89742"];
+    const types: Array<"bean" | "cup" | "logo"> = ["bean", "cup", "logo"];
     const particles: Array<{
       x: number;
       y: number;
@@ -113,19 +117,25 @@ export function CustomerDashboard() {
       speedY: number;
       rotation: number;
       rotationSpeed: number;
+      wobble: number;
+      wobbleSpeed: number;
+      type: "bean" | "cup" | "logo";
     }> = [];
 
     // Populate particles
     for (let i = 0; i < 150; i++) {
       particles.push({
         x: Math.random() * canvas.width,
-        y: Math.random() * -canvas.height - 20,
-        size: Math.random() * 8 + 4,
+        y: Math.random() * -canvas.height - 40,
+        size: Math.random() * 8 + 14, // size range 14px - 22px
         color: colors[Math.floor(Math.random() * colors.length)],
-        speedX: Math.random() * 4 - 2,
-        speedY: Math.random() * 5 + 3,
+        speedX: Math.random() * 3 - 1.5,
+        speedY: Math.random() * 3.5 + 2.5,
         rotation: Math.random() * 360,
-        rotationSpeed: Math.random() * 4 - 2,
+        rotationSpeed: Math.random() * 3 - 1.5,
+        wobble: Math.random() * 10,
+        wobbleSpeed: Math.random() * 0.04 + 0.02,
+        type: types[Math.floor(Math.random() * types.length)],
       });
     }
 
@@ -133,7 +143,7 @@ export function CustomerDashboard() {
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
-      if (elapsed > 4000) {
+      if (elapsed > 4500) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         return;
       }
@@ -142,14 +152,81 @@ export function CustomerDashboard() {
 
       particles.forEach((p) => {
         p.y += p.speedY;
-        p.x += p.speedX;
+        p.wobble += p.wobbleSpeed;
+        p.x += p.speedX + Math.sin(p.wobble) * 0.6;
         p.rotation += p.rotationSpeed;
 
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+
+        if (p.type === "bean") {
+          // Draw a detailed coffee bean
+          ctx.fillStyle = "#5c3a21"; // Espresso brown
+          ctx.beginPath();
+          ctx.ellipse(0, 0, p.size * 0.7, p.size * 0.45, 0, 0, 2 * Math.PI);
+          ctx.fill();
+
+          // Crease down the center
+          ctx.strokeStyle = "#331f11";
+          ctx.lineWidth = p.size * 0.08;
+          ctx.beginPath();
+          ctx.moveTo(-p.size * 0.7, 0);
+          ctx.bezierCurveTo(-p.size * 0.2, p.size * 0.1, p.size * 0.2, -p.size * 0.1, p.size * 0.7, 0);
+          ctx.stroke();
+        } else if (p.type === "cup") {
+          // Draw takeaway cup shape
+          ctx.fillStyle = "#d4af37"; // Brand gold
+          ctx.beginPath();
+          ctx.moveTo(-p.size * 0.4, -p.size * 0.35);
+          ctx.lineTo(p.size * 0.4, -p.size * 0.35);
+          ctx.lineTo(p.size * 0.28, p.size * 0.45);
+          ctx.lineTo(-p.size * 0.28, p.size * 0.45);
+          ctx.closePath();
+          ctx.fill();
+
+          // Cup band (white sleeve)
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.moveTo(-p.size * 0.35, -p.size * 0.1);
+          ctx.lineTo(p.size * 0.35, -p.size * 0.1);
+          ctx.lineTo(p.size * 0.31, p.size * 0.2);
+          ctx.lineTo(-p.size * 0.31, p.size * 0.2);
+          ctx.closePath();
+          ctx.fill();
+
+          // Lid (dark brown)
+          ctx.fillStyle = "#331f11";
+          ctx.beginPath();
+          ctx.rect(-p.size * 0.45, -p.size * 0.55, p.size * 0.9, p.size * 0.2);
+          ctx.fill();
+        } else {
+          // Draw the Punto Café circular logo
+          if (logoImg.complete && logoImg.naturalWidth !== 0) {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 0.75, 0, 2 * Math.PI);
+            ctx.clip();
+            ctx.drawImage(logoImg, -p.size * 0.75, -p.size * 0.75, p.size * 1.5, p.size * 1.5);
+          } else {
+            // Golden circular badge fallback
+            ctx.fillStyle = "#d4af37";
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 0.7, 0, 2 * Math.PI);
+            ctx.fill();
+
+            ctx.strokeStyle = "#1b110b";
+            ctx.lineWidth = p.size * 0.08;
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 0.45, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            ctx.fillStyle = "#1b110b";
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size * 0.18, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+        }
+
         ctx.restore();
       });
 
@@ -178,49 +255,7 @@ export function CustomerDashboard() {
   const [toast, setToast] = useState<{ message: string, type: "success" | "reward" } | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  useEffect(() => {
-    // Initialize/resume AudioContext on user interaction to bypass autoplay restrictions
-    const initAudio = () => {
-      try {
-        let ctx = audioCtxRef.current;
-        if (!ctx) {
-          const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
-          if (AudioContextClass) {
-            ctx = new AudioContextClass();
-            audioCtxRef.current = ctx;
-          }
-        }
-        if (ctx) {
-          if (ctx.state === "suspended") {
-            ctx.resume();
-          }
-          // Play silent buffer to unlock iOS Safari Web Audio
-          const buffer = ctx.createBuffer(1, 1, 22050);
-          const source = ctx.createBufferSource();
-          source.buffer = buffer;
-          source.connect(ctx.destination);
-          source.start(0);
-        }
-      } catch (err) {
-        console.error("Failed to initialize or unlock AudioContext:", err);
-      }
-    };
-
-    const events = ["click", "touchstart", "touchend", "mousedown", "pointerdown"];
-    events.forEach(event => {
-      window.addEventListener(event, initAudio);
-      document.addEventListener(event, initAudio);
-    });
-
-    return () => {
-      events.forEach(event => {
-        window.removeEventListener(event, initAudio);
-        document.removeEventListener(event, initAudio);
-      });
-    };
-  }, []);
-
-  const playSuccessSound = () => {
+  const ensureAudioContext = () => {
     try {
       let ctx = audioCtxRef.current;
       if (!ctx) {
@@ -230,6 +265,70 @@ export function CustomerDashboard() {
           audioCtxRef.current = ctx;
         }
       }
+      
+      if (ctx) {
+        if (ctx.state !== "running") {
+          ctx.resume().catch(err => {
+            console.warn("Could not resume AudioContext (waiting for user gesture):", err);
+          });
+        }
+        // Synchronously create and start a silent buffer source within the user gesture stack
+        try {
+          const buffer = ctx.createBuffer(1, 1, 22050);
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(ctx.destination);
+          source.start(0);
+        } catch (e) {
+          // ignore warmup failures
+        }
+      }
+      return ctx;
+    } catch (err) {
+      console.error("Failed to ensure AudioContext:", err);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const handleGesture = () => {
+      ensureAudioContext();
+    };
+
+    const events = ["click", "touchstart", "touchend", "mousedown", "pointerdown"];
+    events.forEach(event => {
+      window.addEventListener(event, handleGesture);
+      document.addEventListener(event, handleGesture);
+    });
+
+    return () => {
+      events.forEach(event => {
+        window.removeEventListener(event, handleGesture);
+        document.removeEventListener(event, handleGesture);
+      });
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && audioCtxRef.current) {
+        const ctx = audioCtxRef.current;
+        if (ctx.state !== "running") {
+          ctx.resume().catch(() => {
+            // Silently ignore if blocked by browser policy
+          });
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  const playSuccessSound = () => {
+    try {
+      const ctx = ensureAudioContext();
       if (!ctx) return;
 
       const runSound = (c: AudioContext) => {
@@ -250,12 +349,77 @@ export function CustomerDashboard() {
         playTone(659.25, now + 0.15); // E5
       };
 
-      if (ctx.state === "suspended") {
+      if (ctx.state !== "running") {
         ctx.resume().then(() => {
-          if (audioCtxRef.current) {
-            runSound(audioCtxRef.current);
-          }
-        }).catch(err => console.error("Resume failed", err));
+          runSound(ctx);
+        }).catch(err => console.error("Resume failed during playSuccessSound", err));
+      } else {
+        runSound(ctx);
+      }
+    } catch (e) {
+      console.error("Audio error", e);
+    }
+  };
+
+  const playRedeemSound = () => {
+    try {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+
+      const runSound = (c: AudioContext) => {
+        const now = c.currentTime;
+
+        const playSynthNote = (freq: number, startTime: number, duration: number, volume: number = 0.25) => {
+          const filter = c.createBiquadFilter();
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(1500, startTime);
+          filter.Q.setValueAtTime(1, startTime);
+          filter.connect(c.destination);
+
+          const gainNode = c.createGain();
+          gainNode.connect(filter);
+          gainNode.gain.setValueAtTime(0, startTime);
+          gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.05);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+          const osc1 = c.createOscillator();
+          osc1.type = "triangle";
+          osc1.frequency.setValueAtTime(freq, startTime);
+          osc1.connect(gainNode);
+
+          const osc2 = c.createOscillator();
+          osc2.type = "sawtooth";
+          osc2.frequency.setValueAtTime(freq + 2, startTime);
+          osc2.connect(gainNode);
+
+          const osc3 = c.createOscillator();
+          osc3.type = "sine";
+          osc3.frequency.setValueAtTime(freq / 2, startTime);
+          osc3.connect(gainNode);
+
+          osc1.start(startTime);
+          osc2.start(startTime);
+          osc3.start(startTime);
+
+          osc1.stop(startTime + duration);
+          osc2.stop(startTime + duration);
+          osc3.stop(startTime + duration);
+        };
+
+        playSynthNote(261.63, now, 1.2, 0.3); // C4 Bass
+        playSynthNote(392.00, now + 0.08, 1.0, 0.2); // G4
+        playSynthNote(523.25, now + 0.16, 0.9, 0.2); // C5
+        playSynthNote(659.25, now + 0.24, 0.8, 0.2); // E5
+        playSynthNote(783.99, now + 0.32, 0.7, 0.2); // G5
+        playSynthNote(987.77, now + 0.40, 0.8, 0.2); // B5 (Maj7 flavor!)
+        playSynthNote(1046.50, now + 0.48, 1.0, 0.35); // C6 Triumph
+        playSynthNote(1318.51, now + 0.56, 1.2, 0.25); // E6 glitter
+      };
+
+      if (ctx.state !== "running") {
+        ctx.resume().then(() => {
+          runSound(ctx);
+        }).catch(err => console.error("Resume failed during playRedeemSound", err));
       } else {
         runSound(ctx);
       }
@@ -266,16 +430,28 @@ export function CustomerDashboard() {
 
   useEffect(() => {
     if (profile?.card) {
-      if (prevStampsRef.current !== null && profile.card.stamps > prevStampsRef.current) {
-        const isReward = profile.card.stamps >= 5;
-        playSuccessSound();
-        setToast({
-          message: isReward ? "¡Completaste tus 5 sellos! Café gratis." : "¡Sello Ganado!",
-          type: isReward ? "reward" : "success"
-        });
-        
-        setTimeout(() => setToast(null), 4000);
-        setTimeout(() => triggerConfetti(), 100);
+      if (prevStampsRef.current !== null) {
+        if (profile.card.stamps > prevStampsRef.current) {
+          const isReward = profile.card.stamps >= 5;
+          playSuccessSound();
+          setToast({
+            message: isReward ? "¡Completaste tus 5 sellos! Café gratis." : "¡Sello Ganado!",
+            type: isReward ? "reward" : "success"
+          });
+          
+          setTimeout(() => setToast(null), 4000);
+          setTimeout(() => triggerConfetti(), 100);
+        } else if (prevStampsRef.current >= 5 && profile.card.stamps === 0) {
+          // They just redeemed their free coffee!
+          playRedeemSound();
+          setToast({
+            message: "¡Canje Exitoso! Disfrutá tu café de regalo. ☕✨",
+            type: "reward"
+          });
+          
+          setTimeout(() => setToast(null), 4000);
+          setTimeout(() => triggerConfetti(), 100);
+        }
       }
       prevStampsRef.current = profile.card.stamps;
     }
